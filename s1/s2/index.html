@@ -1,1 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Loading...</title>
+  <meta charset="UTF-8">
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const path = window.location.pathname.slice(1); // e.g., "s1/s2"
+      const gasUrl = 'https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_ID/exec?path=' + encodeURIComponent(path);
+
+      fetch(gasUrl)
+        .then(res => res.text())
+        .then(html => {
+          document.open();
+          document.write(html);
+          document.close();
+        })
+        .catch(err => {
+          document.body.innerHTML = "<h3>Failed to load content.</h3>";
+          console.error(err);
+        });
+    });
+  </script>
+</head>
+<body>
+  <p>Loading...</p>
+</body>
+</html>
 
