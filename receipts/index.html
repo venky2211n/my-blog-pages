@@ -110,7 +110,8 @@
         }
 
         /* This API call contacts the Google Sheets webapp API endpoint with the city parameter, and then triggers the displayFetchedData() function with the data returned from the sheet*/
-        fetch("https://script.google.com/macros/s/AKfycbxDHtLLhbeN-j6se9G94W17OhbLcKpcWmjBEthiBP6_ysvJ4eK2QHu67WDZdH4QqQo/exec" + "?city=" + cityName)
+        // fetch("https://script.google.com/macros/s/AKfycbxDHtLLhbeN-j6se9G94W17OhbLcKpcWmjBEthiBP6_ysvJ4eK2QHu67WDZdH4QqQo/exec" + "?city=" + cityName)
+            fetch("https://script.google.com/macros/s/AKfycbxDHtLLhbeN-j6se9G94W17OhbLcKpcWmjBEthiBP6_ysvJ4eK2QHu67WDZdH4QqQo/exec" + "?city=" + kadapa)
             .then((response) => {
                 return response.json();
             })
