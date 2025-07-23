@@ -14,7 +14,7 @@
   </form>
 
   <div id="response"></div>
-
+<!-- 
   <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwCuJcTGku72nb2qPRgopeMFWwZoNGsnexSTVDzRoyNptA3EDzdsOui7Dl4nlBKc3n6kg/exec';
 
@@ -44,6 +44,39 @@
         document.getElementById('response').innerText = "Error submitting form.";
       });
     });
-  </script>
+  </script> -->
+  <script>
+const scriptURL = 'https://script.google.com/macros/s/AKfycb.../exec'; // Replace with your script URL
+
+document.getElementById('myForm').addEventListener('submit', e => {
+  e.preventDefault();
+
+  const form = e.target;
+
+  const formData = {
+    name: form.name.value,
+    email: form.email.value,
+    message: form.message.value
+  };
+
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify(formData),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('response').innerText = data.message;
+    form.reset();
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById('response').innerText = "Error submitting form.";
+  });
+});
+</script>
+
 </body>
 </html>
