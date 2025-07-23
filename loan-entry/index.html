@@ -1,46 +1,49 @@
 <!DOCTYPE html>
-<html>
-<head><title>Send JSON to Google Sheet</title></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submit Form to Google Sheet</title>
+</head>
 <body>
-  <button onclick="sendToSheet()">Send JSON to Sheet</button>
+  <h2>Contact Form</h2>
+  <form id="myForm">
+    <input type="text" name="name" placeholder="Your name" required><br>
+    <input type="email" name="email" placeholder="Your email" required><br>
+    <textarea name="message" placeholder="Your message" required></textarea><br>
+    <button type="submit">Send</button>
+  </form>
+
+  <div id="response"></div>
 
   <script>
-    function sendToSheet() {
-      const dataToSend = [
-        ["Name", "Age", "City"],
-        ["John", 30, "New York"],
-        ["Alice", 25, "Los Angeles"]
-      ];
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxFzqWz0Od8dbyQSJCYIM-PHBc2kx7GvDs_VSHuU3I8qmbdKjeueZfo71prF09d12eEzA/exec';
 
-    //   fetch('https://script.google.com/macros/s/AKfycbz86yH1YrLbaq6HW2xRg452VxwbnfVGAWf2keiKjo-iaO6gPfaQMnHk_FTmJ-ozFTGZpw/exec', {
-    //     method: 'POST',
-    //     body: JSON.stringify(dataToSend),
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     }
-    //   })
-    //   .then(res => res.json())
-    //   .then(response => {
-    //     alert(response.message);
-    //   })
-    //   .catch(err => {
-    //     alert("Error: " + err);
-    //   });
-    // }
+    document.getElementById('myForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const form = e.target;
 
+      const formData = {
+        name: form.name.value,
+        email: form.email.value,
+        message: form.message.value
+      };
 
-
-    fetch('https://script.google.com/macros/s/AKfycbz86yH1YrLbaq6HW2xRg452VxwbnfVGAWf2keiKjo-iaO6gPfaQMnHk_FTmJ-ozFTGZpw/exec', {
-  method: 'POST',
-  body: JSON.stringify([["Name", "Age"], ["John", 25]]),
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-.then(res => res.json())
-.then(data => console.log(data))
-.catch(err => console.error("Fetch error:", err));
-
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('response').innerText = data.message;
+        form.reset();
+      })
+      .catch(err => {
+        document.getElementById('response').innerText = "Error submitting form.";
+      });
+    });
   </script>
 </body>
 </html>
