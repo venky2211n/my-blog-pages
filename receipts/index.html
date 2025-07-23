@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Submit Form</title>
+  <title>Form to Google Sheet</title>
 </head>
 <body>
-  <input type="text" id="name" placeholder="Name"><br>
-  <input type="email" id="email" placeholder="Email"><br>
-  <textarea id="message" placeholder="Message"></textarea><br>
+  <h2>Contact Form</h2>
+  <input type="text" id="name" placeholder="Name"><br><br>
+  <input type="email" id="email" placeholder="Email"><br><br>
+  <textarea id="message" placeholder="Message"></textarea><br><br>
   <button onclick="submitForm()">Submit</button>
-
   <p id="response"></p>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxuCET6ZJVuiMUOVouJZ9imBh55KVpz3_97OIgE4JJelD8-uW6WfpYcQT2BHXbfeINfEg/exec"; // ✅ Replace this
+    const API_URL = "https://script.google.com/macros/s/PASTE_YOUR_SCRIPT_ID_HERE/exec";
 
     async function submitForm() {
       const data = {
@@ -22,7 +22,7 @@
       };
 
       try {
-        const response = await fetch(API_URL, {
+        const res = await fetch(API_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -30,10 +30,10 @@
           body: JSON.stringify(data)
         });
 
-        const result = await response.json();
+        const result = await res.json();
         document.getElementById("response").innerText = result.message;
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error("Error:", error);
         document.getElementById("response").innerText = "Error submitting form.";
       }
     }
