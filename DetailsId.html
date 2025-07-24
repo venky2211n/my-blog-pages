@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dynamic Iframe Loader</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      border: none;
+      width: 100vw;
+      height: 100vh;
+    }
+    #controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 10px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Control input to enter/change the ID -->
+  <div id="controls">
+    <label for="loanId">Enter Loan ID:</label>
+    <input type="text" id="loanId" placeholder="e.g. LN001" />
+    <button onclick="loadIframe()">Load</button>
+  </div>
+
+  <!-- The iframe will be injected dynamically -->
+  <iframe id="myIframe" src=""></iframe>
+
+  <script>
+    function loadIframe() {
+      const id = document.getElementById("loanId").value.trim();
+      if (!id) {
+        alert("Please enter a Loan ID.");
+        return;
+      }
+
+      const baseUrl = "https://script.google.com/macros/s/AKfycbwW9kwbKnnv-GQqHe37DL7iUDFe-ZGorkVta3pWznAvRAcFy6b1lXEULlm1ycPcViCm/exec";
+      const url = `${baseUrl}?options=DetailsPage&id=${encodeURIComponent(id)}`;
+      document.getElementById("myIframe").src = url;
+    }
+
+    // Optional: Load a default ID on page load
+    window.onload = () => {
+      document.getElementById("loanId").value = "LN001";
+      loadIframe();
+    };
+  </script>
+
+</body>
+</html>
