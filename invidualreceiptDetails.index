@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>invidualreceiptDetail</title>
+  <title>Receipt Details</title>
   <style>
     html, body {
       margin: 0;
@@ -41,6 +41,7 @@
 
     const baseUrl = "https://script.google.com/macros/s/AKfycbwW9kwbKnnv-GQqHe37DL7iUDFe-ZGorkVta3pWznAvRAcFy6b1lXEULlm1ycPcViCm/exec";
     const iframeUrl = `${baseUrl}?options=invidualreceiptDetails&id=${encodeURIComponent(id)}&receipt=${encodeURIComponent(receipt)}`;
+
     document.getElementById("myIframe").src = iframeUrl;
   };
 </script>
