@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Iframe from URL Param</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      border: none;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+
+  <iframe id="myIframe" src=""></iframe>
+
+  <script>
+    function getIdFromUrlPath() {
+      const path = window.location.pathname; // e.g., /DetailsPage/id=LN001
+      const match = path.match(/id=([^/]+)/);
+      return match ? match[1] : null;
+    }
+
+    window.onload = function() {
+      const id = getIdFromUrlPath();
+      if (!id) {
+        alert("No ID found in URL path.");
+        return;
+      }
+
+      const baseUrl = "https://script.google.com/macros/s/AKfycbwW9kwbKnnv-GQqHe37DL7iUDFe-ZGorkVta3pWznAvRAcFy6b1lXEULlm1ycPcViCm/exec";
+      const iframeUrl = `${baseUrl}?options=DetailsPage&id=${encodeURIComponent(id)}`;
+      document.getElementById("myIframe").src = iframeUrl;
+    };
+  </script>
+
+</body>
+</html>
