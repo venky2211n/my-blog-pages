@@ -25,11 +25,16 @@
   <iframe id="myIframe" src=""></iframe>
 
   <script>
-    function getIdFromUrlPath() {
-      const path = window.location.pathname; // e.g., /DetailsPage/id=LN001
-      const match = path.match(/id=([^/]+)/);
-      return match ? match[1] : null;
-    }
+    // function getIdFromUrlPath() {
+    //   const path = window.location.pathname; // e.g., /DetailsPage/id=LN001
+    //   const match = path.match(/id=([^/]+)/);
+    //   return match ? match[1] : null;
+    // }
+    function getIdFromQuery() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("id");
+}
+
 
     window.onload = function() {
       const id = getIdFromUrlPath();
