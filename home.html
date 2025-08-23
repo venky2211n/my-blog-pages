@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Details Page</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      border: none;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+
+<iframe id="myIframe" src=""></iframe>
+<script>
+  // Function to read query parameter
+  function getQueryParam(param) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(param);
+  }
+
+  window.onload = function() {
+    const page = getQueryParam("page"); // Read ?page=value from URL
+
+    if (!page) {
+      alert("Missing page parameter");
+      return;
+    }
+
+    const baseUrl = "https://script.google.com/macros/s/AKfycbwgzO2r3Y8zJbqTdxa32NqgDHInvlUGZuZskhhNZZPwn_NY6z9KVAXihWT-ttG8cctkQA/exec";
+
+    // ✅ FIX: Use backticks for template literal
+    const iframeUrl = `${baseUrl}?options=${encodeURIComponent(page)}`;
+
+    document.getElementById("myIframe").src = iframeUrl;
+  };
+</script>
+
+
+</body>
+</html>
