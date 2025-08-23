@@ -33,9 +33,9 @@
   window.onload = function() {
     const page = getQueryParam("page"); // Read ?page=value from URL
 
+       // ✅ Default page if not provided
     if (!page) {
-      alert("Missing page parameter");
-      return;
+      page = "home";  
     }
 
     const baseUrl = "https://script.google.com/macros/s/AKfycbwgzO2r3Y8zJbqTdxa32NqgDHInvlUGZuZskhhNZZPwn_NY6z9KVAXihWT-ttG8cctkQA/exec";
