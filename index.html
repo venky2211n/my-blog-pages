@@ -33,12 +33,18 @@
   window.onload = function() {
     const page = getQueryParam("page"); // Read ?page=value from URL
 
-       // ✅ Default page if not provided
+    // if (!page) {
+    //   alert("Missing page parameter");
+    //   return;
+    // }
+
+
+      // ✅ Default page if not provided
     if (!page) {
-      page = "home";  
+      page = "index";  
     }
 
-    const baseUrl = "https://script.google.com/macros/s/AKfycbwgzO2r3Y8zJbqTdxa32NqgDHInvlUGZuZskhhNZZPwn_NY6z9KVAXihWT-ttG8cctkQA/exec";
+    const baseUrl = "https://script.google.com/macros/s/AKfycbyjpvM-2SoWUZiq2RvVfFCliwU0lAems5d-zkqIJH6e6C6pxOLK2I7SEbpkYmMsGb6mRA/exec";
 
     // ✅ FIX: Use backticks for template literal
     const iframeUrl = `${baseUrl}?options=${encodeURIComponent(page)}`;
