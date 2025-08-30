@@ -1,5 +1,5 @@
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <title>venky</title>
@@ -19,6 +19,66 @@
 </head>
 <body>
   <iframe src="https://script.google.com/macros/s/AKfycbxazoaVLd9V1jJY0GPiI_kau1rcy06PXz9TPWKmcM6PMSgYBJBQJAeqDINIOKF9k6Qtjg/exec"></iframe>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Details Page</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      border: none;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+
+<iframe id="myIframe" src=""></iframe>
+<script>
+  // Function to read query parameter
+  function getQueryParam(param) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(param);
+  }
+
+  window.onload = function() {
+    const page = getQueryParam("page"); // Read ?page=value from URL
+
+    // if (!page) {
+    //   alert("Missing page parameter");
+    //   return;
+    // }
+
+
+      // ✅ Default page if not provided
+    if (!page) {
+      page = "index";  
+    }
+
+    const baseUrl = "https://script.google.com/macros/s/AKfycbyjpvM-2SoWUZiq2RvVfFCliwU0lAems5d-zkqIJH6e6C6pxOLK2I7SEbpkYmMsGb6mRA/exec";
+
+    // ✅ FIX: Use backticks for template literal
+    const iframeUrl = `${baseUrl}?options=${encodeURIComponent(page)}`;
+
+    document.getElementById("myIframe").src = iframeUrl;
+  };
+</script>
+
+
 </body>
 </html>
 
