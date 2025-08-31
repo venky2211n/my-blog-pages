@@ -1,1 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About Us - PR Hardware</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    iframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <iframe id="myIframe"></iframe>
+
+  <script>
+    // ✅ Extract filename without extension from URL
+    function getPageFromPath() {
+      const path = window.location.pathname; 
+      const filename = path.substring(path.lastIndexOf('/') + 1); 
+      return filename.replace('.html', '') || "index";
+    }
+
+    window.onload = function() {
+      const page = getPageFromPath();
+
+      const baseUrl = "https://script.google.com/macros/s/AKfycbz9hGY_2plBc2ZuHwe1WZs8FzEWg7k8E1PicHZpTnwlEWFZtlfs3qjzS0gWZyMk9hpGdQ/exec";
+      const iframeUrl = `${baseUrl}?options=${encodeURIComponent(page)}`;
+
+      document.getElementById("myIframe").src = iframeUrl;
+    };
+  </script>
+</body>
+</html>
+
 
