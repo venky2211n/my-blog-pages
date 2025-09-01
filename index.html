@@ -1,34 +1,7 @@
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>venky</title>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-  </style>
-</head>
-<body>
-  <iframe src="https://script.google.com/macros/s/AKfycbxUcV04ZUFy8pgo6GfEAs3b_eaZa_K23smw-j-gFDX1doRCs-4FLD0X98-7dXFBl4emNA/exec"></iframe>
-</body>
-</html> 
-
-
-<!-- <!DOCTYPE html>
-<html>
-<head>
-  <title>Home Page</title>
+  <title>Fixed Full-Screen Iframe</title>
   <style>
     html, body {
       margin: 0;
@@ -37,6 +10,7 @@
       width: 100%;
       overflow: hidden;
     }
+
     iframe {
       position: fixed;
       top: 0;
@@ -44,43 +18,16 @@
       border: none;
       width: 100vw;
       height: 100vh;
+      z-index: 999;
     }
   </style>
 </head>
 <body>
-
-<iframe id="myIframe" src=""></iframe>
-<script>
-  // Function to read query parameter
-  function getQueryParam(param) {
-    const params = new URLSearchParams(window.location.search);
-    return params.get(param);
-  }
-
-  window.onload = function() {
-    const page = getQueryParam("page"); // Read ?page=value from URL
-
-    // if (!page) {
-    //   alert("Missing page parameter");
-    //   return;
-    // }
-
-
-      // ✅ Default page if not provided
-    if (!page) {
-      page = "index";  
-    }
-
-    const baseUrl = "https://script.google.com/macros/s/AKfycbwsATNKQkNf6t9jKxL6xKZLnN1PAn0L3WM_YmpbcR8y5_BpMDAM4BoJWsHXDMn4byEauQ/exec";
-
-    // ✅ FIX: Use backticks for template literal
-    const iframeUrl = `${baseUrl}?options=${encodeURIComponent(page)}`;
-
-    document.getElementById("myIframe").src = iframeUrl;
-  };
-</script>
-
-
+ <iframe 
+  src="https://script.google.com/macros/s/AKfycbxtZU0wWoO_LHgBFOHjmGPUm3zmG0QibivAKpvBU1oiyzw1MuBC9JoliPr-00eAHEiL7w/exec" 
+  width="100%" 
+  height="100%" 
+  style="position: fixed; top: 0; left: 0; border: none; margin: 0; padding: 0; overflow: hidden; z-index: 999999;">
+</iframe>
 </body>
-</html> -->
-
+</html>
