@@ -1,61 +1,190 @@
-<!-- <<<<<<< HEAD
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GitHub Pages Image Example</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px;
-    }
-    img {
-      max-width: 1000px;
-      margin: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    }
-  </style>
+  <title>EMI Software Portal</title>
 </head>
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+}
+
+/* Navbar styling */
+.navbar {
+    width: 200px;
+    background-color: #333;
+    height: 100vh; 
+    /* height: calc(100vh - 70px); Full height minus top space */
+    position: fixed;
+    /* top: 70px; Add space at the top */
+      top: 0px; /* Add space at the top */
+    left: 0;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+}
+
+.navbar a {
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 18px;
+    color: white;
+    display: block;
+    text-align: left;
+}
+
+.navbar a:hover {
+    background-color: #575757;
+}
+
+/* Content section next to navbar */
+/* .content { */
+    /* margin-left: 220px; */
+
+    /* margin-left: 620px; */
+    /* padding: 20px; */
+    /* width: 100%; */
+/* } */
+
+
+
+/* Content section next to navbar */
+.content {
+    margin-left: 220px;  /* Adjusts space between the navbar and content */
+    margin-right: 20px;  /* Adds space to the right of the content */
+    margin-top: 20px;    /* Adds space above the content */
+    margin-bottom: 20px; /* Adds space below the content */
+    padding: 20px;       /* Adds inner padding inside the content */
+    width: calc(100% - 240px); /* Ensures the content width adapts to the navbar and margins */
+}
+
+
+
+
+.search-container {
+    margin-left: 220px;  /* Adjusts space between the navbar and content */
+    margin-right: 20px;  /* Adds space to the right of the content */
+    margin-top: 20px;    /* Adds space above the content */
+    margin-bottom: 20px; /* Adds space below the content */
+    padding: 20px;       /* Adds inner padding inside the content */
+    width: calc(100% - 240px); /* Ensures the content width adapts to the navbar and margins */
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+
+/* display
+{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+} */
+
+
+
+
+</style>
 <body>
+ 
 
 
-  <!-- Using a raw.githubusercontent.com link -->
-  <!-- <h2>Image from GitHub raw URL</h2>
-  <img src="https://raw.githubusercontent.com/venky2211n/my-blog-pages/refs/heads/main/EMI-software/venkypic.jpg" alt="Logo from GitHub raw">
+    <div class="navbar">
+      <div class="navbar-content">
+     
+     
+       <a href="https://prhardware.shop/EMI-software/home  onclick="loadPage('home'); return false;">Home</a>
+     
+       <a href="https://prhardware.shop/EMI-software/emicalculator onclick="loadPage('emicalculator'); return false;">emicalculator</a>
+         
+        <a href="https://prhardware.shop/EMI-software/customerdetails onclick="loadPage('customerdetails'); return false;">customerdetails</a>
 
-</body>
-</html> --> 
+      <a href="https://prhardware.shop/EMI-software/loanEntry onclick="loadPage('loanEntry'); return false;">Loan Entry</a>
+     
+       <a href="https://prhardware.shop/EMI-software/PendingEMIView onclick="loadPage('PendingEMIView'); return false;">Pending EMI View</a>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GitHub Pages Image Example</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px;
+       <a href="https://prhardware.shop/EMI-software/receipts onclick="loadPage('receipts'); return false;">Receipts</a>
+
+       <a href="https://prhardware.shop/EMI-software/statement  onclick="loadPage('statement'); return false;">Statement</a>
+
+    <a href="https://prhardware.shop/EMI-software/dailycollection onclick="loadPage('dailycollection'); return false;">dailycollection</a>
+          <a href="https://prhardware.shop/EMI-software/duereport onclick="loadPage('duereport'); return false;">duereport</a>
+           <a href="https://prhardware.shop/EMI-software/expiryreport onclick="loadPage('expiryreport'); return false;">expiryreport</a>
+            <a href="https://prhardware.shop/EMI-software/monthlyunpaidreport onclick="loadPage('monthlyunpaidreport'); return false;">monthlyunpaidreport</a>
+             <a href="https://prhardware.shop/EMI-software/bucketwisereport onclick="loadPage('bucketwisereport'); return false;">bucketwisereport</a>
+              <a href="https://prhardware.shop/EMI-software/SeizeandForeclosure onclick="loadPage('SeizeandForeclosure'); return false;">SeizeandForeclosure</a>
+
+        </div>
+     
+    </div>
+
+
+
+  <iframe id="myIframe" style="width:100%;height:90vh;border:none;"></iframe>
+
+  <script>
+    const baseUrl = "https://script.google.com/macros/s/AKfycbwfB5nkMGrzpX1NtxvpFkBdWbO1BsuZiaXIyLb5ArH1aibAbXc1QuinTNYCPboHKxXDAA/exec?options=";
+    const displayUrl = "https://prhardware.shop/EMI-software/";
+    const iframe = document.getElementById("myIframe");
+
+    function loadPage(path) {
+      iframe.src = baseUrl + path;
+      history.pushState({}, '', displayUrl + path);
     }
-    img {
-      max-width: 300px;
-      margin: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    }
-  </style>
-</head>
-<body>
 
-
-  <!-- Using a raw.githubusercontent.com link -->
-  <h2>Image from GitHub raw URL</h2>
-  <img src="https://raw.githubusercontent.com/venky2211n/my-blog-pages/refs/heads/main/EMI-software/venkypic.jpg" alt="Logo from GitHub raw">
-
+    window.addEventListener('load', () => {
+      const currentPath = window.location.pathname.replace('/EMI-software/', '');
+      iframe.src = baseUrl + (currentPath || "home");
+    });
+  </script>
 </body>
 </html>
 
