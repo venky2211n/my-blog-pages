@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Responsive 3x3 Iframe Dashboard</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: Arial, sans-serif;
+      background: #e9ecef;
+    }
+
+    /* GRID LAYOUT */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* Desktop: 3 columns */
+      gap: 15px;
+      padding: 15px;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Each Box */
+    .box {
+      background: white;
+      border: 2px solid #0077cc;
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Titles */
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #003366;
+      text-align: center;
+    }
+
+    /* Iframe Style */
+    iframe {
+      width: 100%;
+      height: 100%;
+      flex-grow: 1;
+      border: none;
+      border-radius: 8px;
+      background: #f8f9fa;
+    }
+
+    /* RESPONSIVE BREAKPOINTS */
+
+    /* Tablet: 2 columns */
+    @media(max-width: 992px) {
+      .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Mobile: 1 column */
+    @media(max-width: 600px) {
+      .grid-container {
+        grid-template-columns: repeat(1, 1fr);
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="grid-container">
+
+    <!-- BOX 1 -->
+    <div class="box">
+      <div class="title">Dashboard 1</div>
+      <iframe src="URL_1_HERE"></iframe>
+    </div>
+
+    <!-- BOX 2 -->
+    <div class="box">
+      <div class="title">Dashboard 2</div>
+      <iframe src="URL_2_HERE"></iframe>
+    </div>
+
+    <!-- BOX 3 -->
+    <div class="box">
+      <div class="title">Dashboard 3</div>
+      <iframe src="URL_3_HERE"></iframe>
+    </div>
+
+    <!-- BOX 4 -->
+    <div class="box">
+      <div class="title">Dashboard 4</div>
+      <iframe src="URL_4_HERE"></iframe>
+    </div>
+
+    <!-- BOX 5 -->
+    <div class="box">
+      <div class="title">Dashboard 5</div>
+      <iframe src="URL_5_HERE"></iframe>
+    </div>
+
+    <!-- BOX 6 -->
+    <div class="box">
+      <div class="title">Dashboard 6</div>
+      <iframe src="URL_6_HERE"></iframe>
+    </div>
+
+    <!-- BOX 7 -->
+    <div class="box">
+      <div class="title">Dashboard 7</div>
+      <iframe src="URL_7_HERE"></iframe>
+    </div>
+
+    <!-- BOX 8 -->
+    <div class="box">
+      <div class="title">Dashboard 8</div>
+      <iframe src="URL_8_HERE"></iframe>
+    </div>
+
+    <!-- BOX 9 -->
+    <div class="box">
+      <div class="title">Dashboard 9</div>
+      <iframe src="URL_9_HERE"></iframe>
+    </div>
+
+  </div>
+
+</body>
+</html>
