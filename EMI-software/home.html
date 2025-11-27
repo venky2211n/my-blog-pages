@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -96,4 +96,94 @@
   </section>
 </body>
 </html>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>2x2 Grid Iframes Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f1f1f1;
+      font-family: Arial;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* 2 columns */
+      grid-template-rows: repeat(2, 50vh);   /* 2 rows */
+      gap: 10px;
+      padding: 10px;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .grid-item {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .grid-item iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .title-bar {
+      background: #333;
+      color: white;
+      padding: 5px 10px;
+      font-size: 16px;
+      font-weight: bold;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 10;
+    }
+
+    .grid-item iframe {
+      margin-top: 30px; /* for title bar */
+      height: calc(100% - 30px);
+    }
+  </style>
+</head>
+<body>
+
+<div class="grid-container">
+
+  <!-- 1: Dashboard -->
+  <div class="grid-item">
+    <div class="title-bar">Dashboard</div>
+    <iframe src="https://script.google.com/macros/s/AKfycbwwy3xT99T-oWLCGqWnhHoIs_xQU0hoRl-d8FISPftTKCW7xPMTqLqY1mo7xirAwrnJLg/exec"></iframe>
+  </div>
+
+  <!-- 2: Statement -->
+  <div class="grid-item">
+    <div class="title-bar">Statement</div>
+    <iframe src="https://script.google.com/macros/s/AKfycbwwy3xT99T-oWLCGqWnhHoIs_xQU0hoRl-d8FISPftTKCW7xPMTqLqY1mo7xirAwrnJLg/exec?options=statement"></iframe>
+  </div>
+
+  <!-- 3: Reports -->
+  <div class="grid-item">
+    <div class="title-bar">Reports</div>
+    <iframe src="https://script.google.com/macros/s/AKfycbwwy3xT99T-oWLCGqWnhHoIs_xQU0hoRl-d8FISPftTKCW7xPMTqLqY1mo7xirAwrnJLg/exec?options=receipts"></iframe>
+  </div>
+
+  <!-- 4: Analytics -->
+  <div class="grid-item">
+    <div class="title-bar">Analytics</div>
+    <iframe src="https://script.google.com/macros/s/AKfycbwwy3xT99T-oWLCGqWnhHoIs_xQU0hoRl-d8FISPftTKCW7xPMTqLqY1mo7xirAwrnJLg/exec"></iframe>
+  </div>
+
+</div>
+
+</body>
+</html>
+
 
