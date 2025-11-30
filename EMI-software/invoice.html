@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice List</title>
+  <style>
+    body { font-family: Arial; padding:20px; }
+    table { border-collapse: collapse; width:100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align:center; }
+    th { background-color: #f2f2f2; }
+    button { padding:5px 10px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <h2>Invoice List</h2>
+  <table id="invoiceTable">
+    <thead>
+      <tr>
+        <th>Invoice Number</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    // Google Apps Script Web App URL that serves invoice list JSON
+    const appsScriptUrl = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+
+    // Fetch invoices from Google Sheet
+    fetch(`${appsScriptUrl}?action=getInvoices`)
+      .then(res => res.json())
+      .then(invoices => {
+        const tbody = document.querySelector("#invoiceTable tbody");
+        invoices.forEach(inv => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${inv}</td>
+            <td>
+              <button onclick="openInvoice('${inv}')">View / Print / Download</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+
+    // Open invoice in new popup window
+    function openInvoice(invoiceId) {
+      const url = `https://script.google.com/macros/s/AKfycbwz3lgGS7yk1_9yUEk-ORLHaahtrkYxjtdEkqC8JVsYg37N11RD_CJVnp9YmXL7_u8/exec?invoiceId=${invoiceId}`;
+      window.open(url, "_blank", "width=900,height=600,scrollbars=yes");
+    }
+  </script>
+</body>
+</html>
