@@ -140,7 +140,7 @@
 </html> -->
 
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <title>Invoice List</title>
@@ -191,7 +191,65 @@
     });
   </script>
 </body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice List</title>
+  <style>
+    body { font-family: Arial; padding:20px; background:#f9f9f9; }
+    h2 { text-align:center; }
+    table { border-collapse: collapse; width: 80%; margin: auto; background: #fff; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align:center; }
+    th { background-color: #f2f2f2; }
+    a.button {
+      text-decoration: none;
+      background-color: #4CAF50;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 3px;
+    }
+    a.button:hover { background-color: #45a049; }
+  </style>
+</head>
+<body>
+  <h2>Invoice List</h2>
+  <table id="invoiceTable">
+    <thead>
+      <tr>
+        <th>Invoice Number</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    // Google Apps Script Web App URL
+    const appsScriptUrl = "https://script.google.com/macros/s/AKfycbz0Vvme1OdOiozAgKI72p4o4Pcg5cwJRJIp43NAoOKfac4sLM6sidlWNLMtZsl_1SrJ/exec";
+
+    fetch(`${appsScriptUrl}?action=getInvoices`)
+      .then(res => res.json())
+      .then(invoices => {
+        const tbody = document.querySelector("#invoiceTable tbody");
+        invoices.forEach(inv => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${inv}</td>
+            <td>
+              <a class="button" href="${appsScriptUrl}?invoiceId=${inv}" target="_blank">
+                View / Download PDF
+              </a>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+  </script>
+</body>
 </html>
+
 
 
 
