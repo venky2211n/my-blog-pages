@@ -276,8 +276,16 @@
 <body>
 <iframe id="myIframe" src=""></iframe>
 
+
+
+
+ 
+
 <script>
-  // Read invoiceId from URL like ?invoiceId=INV-1001
+
+
+
+   // Read invoiceId from URL like ?invoiceId=INV-1001
   function getInvoiceId() {
     const params = new URLSearchParams(window.location.search);
     return params.get("invoiceId");
@@ -291,11 +299,36 @@
       return;
     }
 
-    // GOOGLE APPS SCRIPT WEB APP URL
-    const baseUrl =
-      "https://script.google.com/macros/s/AKfycbw2SA_u78XqSaY2wlo-VsLR4QrCiURtxYTpdctFSZvQInYRy0lyjJ1NTJf-jyV66QR1/exec";
+    
+  function extractInvoiceId() {
+    const path = window.location.pathname;
 
-    const iframeUrl = `${baseUrl}?invoiceId=${encodeURIComponent(invoiceId)}`;
+    // Match /EMI-software/invoice/INV-1001.pdf
+    const regex = /^\/EMI-software\/invoice\/(.+)\.pdf$/;
+
+    const match = path.match(regex);
+
+    if (!match) {
+      console.log("Regex failed:", path);
+      return null;
+    }
+
+    return match[1]; // Returns: INV-1001
+  }
+
+  window.onload = function () {
+    const invoiceId = extractInvoiceId();
+
+    if (!invoiceId) {
+      alert("Invalid Invoice URL Format!");
+      return;
+    }
+
+    // Apps Script deployed URL
+    const baseUrl =
+      "https://script.google.com/macros/s/AKfycbzkpGpFrlzmfIlEFswlnAYB43coovOUXkOAXcDiIjghKE6SVwX3aSKYVvnrTOLH6v8W9w/exec";
+
+    const iframeUrl = `${baseUrl}?options=InvoiceDetails&invoiceId=${encodeURIComponent(invoiceId)}`;
 
     document.getElementById("myIframe").src = iframeUrl;
   };
