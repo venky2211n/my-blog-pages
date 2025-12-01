@@ -22,7 +22,7 @@
 </head>
 <body>
 
-<iframe id="myIframe" src=""></iframe>
+<!-- <iframe id="myIframe" src=""></iframe>
 
 <script>
   function getIdFromQuery() {
@@ -41,7 +41,42 @@
     const iframeUrl = `${baseUrl}?options=DetailsPage&id=${encodeURIComponent(id)}`;
     document.getElementById("myIframe").src = iframeUrl;
   };
+</script> -->
+
+  <iframe id="myIframe" src="" style="width:100%; height:100vh; border:none;"></iframe>
+
+<script>
+  function getIdFromPdfURL() {
+    // Example path: /EMI-software/invoice/INV-1001.pdf
+    const path = window.location.pathname;
+
+    const parts = path.split("/");
+    const filename = parts[parts.length - 1];   // INV-1001.pdf
+
+    if (!filename.endsWith(".pdf")) {
+      return null;
+    }
+
+    // Remove .pdf → return INV-1001
+    return filename.replace(".pdf", "");
+  }
+
+  window.onload = function() {
+    const id = getIdFromPdfURL();
+
+    if (!id) {
+      alert("Invalid or Missing Invoice ID");
+      return;
+    }
+
+    const baseUrl = "https://script.google.com/macros/s/AKfycbzkpGpFrlzmfIlEFswlnAYB43coovOUXkOAXcDiIjghKE6SVwX3aSKYVvnrTOLH6v8W9w/exec";
+
+    const iframeUrl = `${baseUrl}?options=DetailsPage&id=${encodeURIComponent(id)}`;
+
+    document.getElementById("myIframe").src = iframeUrl;
+  };
 </script>
+
 
 </body>
 </html>
