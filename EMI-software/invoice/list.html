@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice List</title>
+  <style>
+    table { border-collapse:collapse; width:100%; }
+    th,td { border:1px solid #ccc; padding:10px; }
+    button { padding:8px 12px; }
+  </style>
+</head>
+<body>
+
+<h2>Invoice Number - Action</h2>
+
+<table id="table">
+  <tr>
+    <th>Invoice Number</th>
+    <th>Action</th>
+  </tr>
+</table>
+
+<script>
+  const apiUrl =
+    "https://script.google.com/macros/s/AKfycbxrS_buL9RucLQe5ZACfC64EmzI7VoQ9dGuwGNEEsHQRPQg3iHG_NO-C0GDY7tUvj6X/exec?list=1";
+
+  // Fetch all invoice numbers (modify Apps Script to return full list)
+  fetch(apiUrl)
+    .then(res => res.json())
+    .then(rows => {
+      const table = document.getElementById("table");
+
+      rows.forEach(r => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${r.invoiceId}</td>
+          <td>
+            <button onclick="openInvoice('${r.invoiceId}')">
+              View / Download PDF
+            </button>
+          </td>
+        `;
+
+        table.appendChild(tr);
+      });
+    });
+
+  function openInvoice(id) {
+    window.location.href = `index.html?invoiceId=${id}`;
+  }
+</script>
+
+</body>
+</html>
