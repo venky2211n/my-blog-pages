@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice Viewer</title>
+  <style>
+    body { margin:0; font-family:Arial; }
+    .info-box { padding:15px; background:#f4f4f4; }
+    iframe { width:100%; height:80vh; border:none; }
+    .btns { padding:10px; }
+    button { padding:10px 15px; margin-right:10px; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+<div class="info-box" id="info">Loading invoice...</div>
+
+<div class="btns">
+  <button id="printBtn">Print PDF</button>
+  <button id="downloadBtn">Download PDF</button>
+</div>
+
+<iframe id="invoiceFrame"></iframe>
+
+<script>
+  function getInvoiceId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("invoiceId");
+  }
+
+  const invoiceId = getInvoiceId();
+  if (!invoiceId) {
+    document.getElementById("info").innerHTML = "<b>Error:</b> Missing invoiceId";
+  }
+
+  const apiUrl =
+    `https://script.google.com/macros/s/AKfycbxrS_buL9RucLQe5ZACfC64EmzI7VoQ9dGuwGNEEsHQRPQg3iHG_NO-C0GDY7tUvj6X/exec?invoiceId=${invoiceId}`;
+
+  fetch(apiUrl)
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        document.getElementById("info").innerHTML = data.error;
+        return;
+      }
+
+      document.getElementById("info").innerHTML = `
+        <h2>Invoice ${data.invoiceId}</h2>
+        <p><b>Customer:</b> ${data.customer}</p>
+        <p><b>Amount:</b> ${data.amount}</p>
+        <p><b>Date:</b> ${data.date}</p>
+      `;
+
+      document.getElementById("invoiceFrame").src = data.pdfUrl;
+
+      document.getElementById("printBtn").onclick = () => {
+        window.open(data.pdfUrl, "_blank").print();
+      };
+
+      document.getElementById("downloadBtn").onclick = () => {
+        window.location.href = data.pdfUrl;
+      };
+    });
+</script>
+
+</body>
+</html>
