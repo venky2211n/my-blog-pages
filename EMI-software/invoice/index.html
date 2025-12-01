@@ -1,370 +1,6 @@
-<!-- <!DOCTYPE html>
-<html>
-<head>
-<title>Invoice Viewer</title>
-<style>
-  html, body {
-    margin:0;
-    padding:0;
-    width:100%;
-    height:100%;
-  }
-  iframe {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    border: none;
-  }
-</style>
-</head>
-
-<body>
-
-<iframe id="myIframe"></iframe>
-
-<script>
-  // Extract "invoiceId=INV-1001" from the URL path
-  function extractInvoiceIdFromPath() {
-    const path = window.location.pathname;  
-    // Example path: /EMI-software/invoice/invoiceId=INV-1001
-    const parts = path.split("/");
-    const lastPart = parts[parts.length - 1]; // invoiceId=INV-1001
-
-    if (lastPart.startsWith("invoiceId=")) {
-      return lastPart.split("=")[1]; // INV-1001
-    }
-    return null;
-  }
-
-  window.onload = function() {
-    const invoiceId = extractInvoiceIdFromPath();
-
-    if (!invoiceId) {
-      alert("Missing invoiceId in URL");
-      return;
-    }
-
-    // YOUR APPS SCRIPT WEB APP URL
-    const baseUrl = 
-      "https://script.google.com/macros/s/AKfycbzD7623BSRp7fBclO0cTDLMTmlNJLuia3-Um9BckMurTYP9YSxb-QsrzRoQCZUS09tA/exec";
-
-    document.getElementById("myIframe").src =
-      `${baseUrl}?invoiceId=${encodeURIComponent(invoiceId)}`;
-  };
-</script>
-
-</body>
-</html> -->
-
+//https://prhardware.shop/EMI-software/invoice/?invoiceId=INV-1001
 
 <!-- <!DOCTYPE html>
-<html>
-<head>
-<title>Invoice Viewer</title>
-<style>
-  html, body {
-    margin:0;
-    padding:0;
-    width:100%;
-    height:100%;
-  }
-  iframe {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    border: none;
-  }
-</style>
-</head>
-
-<body>
-
-<iframe id="myIframe"></iframe>
-
-<script>
-  function extractInvoiceId() {
-    const fullPath = window.location.pathname; 
-    // Example: /EMI-software/invoice/INV-1001.pdf
-
-    const parts = fullPath.split("/");  
-    const filename = parts[parts.length - 1];  
-    // filename = "INV-1001.pdf"
-
-    if (!filename.endsWith(".pdf")) return null;
-
-    return filename.replace(".pdf", "");  
-    // → returns "INV-1001"
-  }
-
-  window.onload = function () {
-    const invoiceId = extractInvoiceId();
-    if (!invoiceId) {
-      alert("Invalid invoice URL");
-      return;
-    }
-
-    // YOUR APPS SCRIPT WEB APP URL
-    const baseUrl =
-      "https://script.google.com/macros/s/AKfycbykBcuMm8Gu1rEZ1BFECd9aA-eFaHcV3ytJpxO3SrLcg6R_kTtJ9Kl3Eoiwqhcfl-Wj/exec";
-
-    const iframeUrl = `${baseUrl}?options=InvoiceDetails&invoiceId=${encodeURIComponent(invoiceId)}`;
-
-    document.getElementById("myIframe").src = iframeUrl;
-  };
-</script>
-
-
-
-</body>
-</html> -->
-
-<!-- <!DOCTYPE html>
-<html>
-<head>
-<title>Invoice Viewer</title>
-<style>
-  iframe {
-    position: fixed;
-    top: 0;
-    left: 0;
-    border: none;
-    width: 100vw;
-    height: 100vh;
-  }
-</style>
-</head>
-<body>
-
-<iframe id="myIframe" src=""></iframe>
-
-<script>
-  function getInvoiceIdFromURL() {
-    const path = window.location.pathname;    
-    const parts = path.split("/");            
-    const lastPart = parts[parts.length - 1];  
-
-    if (!lastPart.endsWith(".pdf")) return null;
-
-    return lastPart.replace(".pdf", ""); 
-  }
-
-  window.onload = function () {
-    const invoiceId = getInvoiceIdFromURL();
-
-    if (!invoiceId) {
-      alert("Invalid Invoice URL!");
-      return;
-    }
-
-    const baseUrl = "https://script.google.com/macros/s/AKfycbyZWEaQ6Hn46N1ydBpNFKIeKQcrVYRx5D6MTfT6LL0JfsVdK4B4Z0gCZfUogUGpssr_/exec";
-
-    const iframeUrl = `${baseUrl}?invoiceId=${encodeURIComponent(invoiceId)}`;
-    document.getElementById("myIframe").src = iframeUrl;
-  };
-</script>
-
-</body>
-</html> -->
-
-
-<!-- <!DOCTYPE html>
-<html>
-<head>
-  <title>Invoice Viewer</title>
-  <style>
-    iframe {
-      position: fixed;
-      top: 0;
-      left: 0;
-      border: none;
-      width: 100vw;
-      height: 100vh;
-    }
-  </style>
-</head>
-<body> -->
-
-<!-- <iframe id="myIframe"></iframe>
-
-<script>
-  function extractInvoiceId() {
-    // Full path example:
-    // /EMI-software/invoice/INV-1001.pdf
-    const fullPath = window.location.pathname;
-
-    // Split by /
-    const parts = fullPath.split("/");
-
-    // Last part = file name (INV-1001.pdf)
-    const filename = parts.pop() || parts.pop();
-
-    if (!filename || !filename.endsWith(".pdf")) {
-      return null;
-    }
-
-    // Remove .pdf → return INV-1001
-    return filename.replace(".pdf", "");
-  }
-
-  window.onload = function () {
-    const invoiceId = extractInvoiceId();
-
-    if (!invoiceId) {
-      alert("Invalid URL Format. Expected *.pdf");
-      return;
-    }
-
-    // YOUR Apps Script web app URL
-    const baseUrl =
-      "https://script.google.com/macros/s/AKfycbzkpGpFrlzmfIlEFswlnAYB43coovOUXkOAXcDiIjghKE6SVwX3aSKYVvnrTOLH6v8W9w/exec";
-
-    const iframeUrl = `${baseUrl}?options=InvoiceDetails&invoiceId=${encodeURIComponent(invoiceId)}`;
-
-    document.getElementById("myIframe").src = iframeUrl;
-  };
-</script> -->
-
-
-<!-- 
-  <iframe id="myIframe" style="width:100%; height:100vh; border:none;"></iframe>
-
-<script>
-  function extractInvoiceId() {
-    // Example path: /EMI-software/invoice/INV-1001.pdf
-    const fullPath = window.location.pathname;
-
-    const parts = fullPath.split("/");
-    const filename = parts[parts.length - 1]; // e.g. "INV-1001.pdf"
-
-    if (!filename || !filename.endsWith(".pdf")) {
-      return null;
-    }
-
-    // Remove .pdf → INV-1001
-    return filename.replace(".pdf", "");
-  }
-
-  window.onload = function () {
-    const invoiceId = extractInvoiceId();
-
-    if (!invoiceId) {
-      alert("Invalid Invoice URL Format.");
-      return;
-    }
-
-    // ⭐ Your Apps Script Web App URL
-    const baseUrl =
-      "https://script.google.com/macros/s/AKfycbzkpGpFrlzmfIlEFswlnAYB43coovOUXkOAXcDiIjghKE6SVwX3aSKYVvnrTOLH6v8W9w/exec";
-
-    // Full iframe URL
-    const iframeUrl =
-      `${baseUrl}?options=InvoiceDetails&invoiceId=${encodeURIComponent(invoiceId)}`;
-
-    document.getElementById("myIframe").src = iframeUrl;
-  };
-</script> -->
-
-<!-- 
-    <iframe id="myIframe" style="width:100%; height:100vh; border:none;"></iframe>
-
-<script>
-  function getInvoiceIdFromPdfURL() {
-    // Example URL path: /EMI-software/invoice/INV-1001.pdf
-    const path = window.location.pathname;
-
-    // Split path by "/"
-    const parts = path.split("/");
-
-    // last part should be "INV-1001.pdf"
-    const file = parts[parts.length - 1];
-
-    // Validate PDF format
-    if (!file || !file.endsWith(".pdf")) {
-      return null;
-    }
-
-    // Remove .pdf → return "INV-1001"
-    return file.replace(".pdf", "");
-  }
-
-  window.onload = function () {
-    const invoiceId = getInvoiceIdFromPdfURL();
-
-    if (!invoiceId) {
-      alert("Invalid URL. Expected format: /invoice/INV-XXXX.pdf");
-      return;
-    }
-
-    const baseUrl =
-      "https://script.google.com/macros/s/AKfycbzkpGpFrlzmfIlEFswlnAYB43coovOUXkOAXcDiIjghKE6SVwX3aSKYVvnrTOLH6v8W9w/exec";
-
-    const iframeUrl =
-      `${baseUrl}?options=InvoiceDetails&invoiceId=${encodeURIComponent(invoiceId)}`;
-
-    document.getElementById("myIframe").src = iframeUrl;
-  };
-</script>
-
-
-</body>
-</html> -->
-
-
-
-<!-- <!DOCTYPE html>
-<html>
-<head>
-  <title>Details Page</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-    }
-    iframe {
-      position: fixed;
-      top: 0;
-      left: 0;
-      border: none;
-      width: 100vw;
-      height: 100vh;
-    }
-  </style>
-</head>
-<body>
-
-<iframe id="myIframe" src=""></iframe>
-
-<script>
-  function getIdFromQuery() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("id");
-  }
-
-  window.onload = function() {
-    const id = getIdFromQuery();
-    if (!id) {
-      alert("Missing ID");
-      return;
-    }
-
-    const baseUrl = "https://script.google.com/macros/s/AKfycbzkpGpFrlzmfIlEFswlnAYB43coovOUXkOAXcDiIjghKE6SVwX3aSKYVvnrTOLH6v8W9w/exec";
-    const iframeUrl = `${baseUrl}?options=InvoiceDetails&id=${encodeURIComponent(id)}`;
-    document.getElementById("myIframe").src = iframeUrl;
-  };
-</script> 
-</body>
-</html> -->
-
-
-
-<!DOCTYPE html>
 <html>
 <head>
   <title>Invoice Viewer</title>
@@ -411,7 +47,84 @@
 </script>
 
 </body>
+</html> -->
+
+//https://prhardware.shop/EMI-software/invoice/?invoiceId=INV-1001
+//https://prhardware.shop/EMI-software/invoice/INV-1001.pdf
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice Viewer</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      border: none;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+
+<iframe id="myIframe" src=""></iframe>
+
+<script>
+  // 1️⃣ Extract from query: ?invoiceId=INV-1001
+  function getInvoiceIdFromQuery() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("invoiceId");
+  }
+
+  // 2️⃣ Extract from path: /invoice/INV-1001.pdf
+  function getInvoiceIdFromPdfUrl() {
+    const path = window.location.pathname;  
+    // Split into parts
+    const parts = path.split("/");
+    const last = parts.pop() || parts.pop();  // handles trailing slash
+
+    if (last && last.endsWith(".pdf")) {
+      return last.replace(".pdf", "");  // Remove .pdf → INV-1001
+    }
+    return null;
+  }
+
+  window.onload = function() {
+    let invoiceId = getInvoiceIdFromQuery();
+
+    // If not found in query, try PDF URL
+    if (!invoiceId) {
+      invoiceId = getInvoiceIdFromPdfUrl();
+    }
+
+    if (!invoiceId) {
+      alert("❌ Invoice ID not found in URL");
+      return;
+    }
+
+    // Your Apps Script Web App URL
+    const baseUrl =
+      "https://script.google.com/macros/s/AKfycbzkpGpFrlzmfIlEFswlnAYB43coovOUXkOAXcDiIjghKE6SVwX3aSKYVvnrTOLH6v8W9w/exec";
+
+    const iframeUrl =
+      `${baseUrl}?options=InvoiceDetails&invoiceId=${encodeURIComponent(invoiceId)}`;
+
+    document.getElementById("myIframe").src = iframeUrl;
+  };
+</script>
+
+</body>
 </html>
+
 
 
 
