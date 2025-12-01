@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
 <title>Invoice Viewer</title>
@@ -56,4 +56,72 @@
 </script>
 
 </body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Invoice Viewer</title>
+<style>
+  html, body {
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+  }
+  iframe {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    border: none;
+  }
+</style>
+</head>
+
+<body>
+
+<iframe id="myIframe"></iframe>
+
+<script>
+  function extractInvoiceId() {
+    const fullPath = window.location.pathname; 
+    // Example: /EMI-software/invoice/INV-1001.pdf
+
+    const parts = fullPath.split("/");  
+    const filename = parts[parts.length - 1];  
+    // filename = "INV-1001.pdf"
+
+    if (!filename.endsWith(".pdf")) return null;
+
+    return filename.replace(".pdf", "");  
+    // → returns "INV-1001"
+  }
+
+  window.onload = function () {
+    const invoiceId = extractInvoiceId();
+    if (!invoiceId) {
+      alert("Invalid invoice URL");
+      return;
+    }
+
+    // YOUR APPS SCRIPT WEB APP URL
+    const baseUrl =
+      "https://script.google.com/macros/s/AKfycbykBcuMm8Gu1rEZ1BFECd9aA-eFaHcV3ytJpxO3SrLcg6R_kTtJ9Kl3Eoiwqhcfl-Wj/exec";
+
+    const iframeUrl = `${baseUrl}?options=InvoiceDetails&invoiceId=${encodeURIComponent(invoiceId)}`;
+
+    document.getElementById("myIframe").src = iframeUrl;
+  };
+</script>
+
+
+
+</body>
 </html>
+
+
+
+
