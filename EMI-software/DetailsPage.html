@@ -43,7 +43,7 @@
   };
 </script> -->
 
-  <iframe id="myIframe" src="" style="width:100%; height:100vh; border:none;"></iframe>
+  <!-- <iframe id="myIframe" src="" style="width:100%; height:100vh; border:none;"></iframe>
 
 <script>
   function getIdFromPdfURL() {
@@ -75,7 +75,49 @@
 
     document.getElementById("myIframe").src = iframeUrl;
   };
+</script> -->
+
+
+  <iframe id="myIframe" style="width:100%; height:100vh; border:none;"></iframe>
+
+<script>
+  function getInvoiceIdFromPdfURL() {
+    // Example URL path: /EMI-software/invoice/INV-1001.pdf
+    const path = window.location.pathname;
+
+    // Split path by "/"
+    const parts = path.split("/");
+
+    // last part should be "INV-1001.pdf"
+    const file = parts[parts.length - 1];
+
+    // Validate PDF format
+    if (!file || !file.endsWith(".pdf")) {
+      return null;
+    }
+
+    // Remove .pdf → return "INV-1001"
+    return file.replace(".pdf", "");
+  }
+
+  window.onload = function () {
+    const invoiceId = getInvoiceIdFromPdfURL();
+
+    if (!invoiceId) {
+      alert("Invalid URL. Expected format: /invoice/INV-XXXX.pdf");
+      return;
+    }
+
+    const baseUrl =
+      "https://script.google.com/macros/s/AKfycbzkpGpFrlzmfIlEFswlnAYB43coovOUXkOAXcDiIjghKE6SVwX3aSKYVvnrTOLH6v8W9w/exec";
+
+    const iframeUrl =
+      `${baseUrl}?options=InvoiceDetails&invoiceId=${encodeURIComponent(invoiceId)}`;
+
+    document.getElementById("myIframe").src = iframeUrl;
+  };
 </script>
+
 
 
 </body>
