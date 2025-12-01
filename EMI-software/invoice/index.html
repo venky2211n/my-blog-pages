@@ -125,7 +125,7 @@
 </html> -->
 
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <title>Invoice Viewer</title>
@@ -175,7 +175,43 @@
 </script>
 
 </body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice Viewer</title>
+  <style>
+    html, body {margin:0; padding:0; height:100%; width:100%; overflow:hidden;}
+    iframe {width:100vw; height:100vh; border:none; position:fixed; top:0; left:0;}
+  </style>
+</head>
+<body>
+<iframe id="myIframe"></iframe>
+
+<script>
+  function getInvoiceId() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("invoiceId")) return params.get("invoiceId");
+
+    const path = window.location.pathname.split("/").pop() || "";
+    if (path) return path; // SPA clean URL without .pdf
+    return null;
+  }
+
+  const invoiceId = getInvoiceId();
+  if (!invoiceId) {
+    document.body.innerHTML = "<h2 style='padding:20px;color:red'>Invoice ID missing</h2>";
+  } else {
+    const baseUrl = "https://script.google.com/macros/s/AKfycbzkpGpFrlzmfIlEFswlnAYB43coovOUXkOAXcDiIjghKE6SVwX3aSKYVvnrTOLH6v8W9w/exec";
+    document.getElementById("myIframe").src = `${baseUrl}?options=InvoiceDetails&invoiceId=${encodeURIComponent(invoiceId)}`;
+  }
+</script>
+</body>
 </html>
+
 
 
 
