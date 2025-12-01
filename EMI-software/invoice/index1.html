@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Invoice Viewer</title>
+<style>
+  html, body {
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+  }
+  iframe {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    border: none;
+  }
+</style>
+</head>
+
+<body>
+
+<iframe id="myIframe"></iframe>
+
+<script>
+  // Extract "invoiceId=INV-1001" from the URL path
+  function extractInvoiceIdFromPath() {
+    const path = window.location.pathname;  
+    // Example path: /EMI-software/invoice/invoiceId=INV-1001
+    const parts = path.split("/");
+    const lastPart = parts[parts.length - 1]; // invoiceId=INV-1001
+
+    if (lastPart.startsWith("invoiceId=")) {
+      return lastPart.split("=")[1]; // INV-1001
+    }
+    return null;
+  }
+
+  window.onload = function() {
+    const invoiceId = extractInvoiceIdFromPath();
+
+    if (!invoiceId) {
+      alert("Missing invoiceId in URL");
+      return;
+    }
+
+    // YOUR APPS SCRIPT WEB APP URL
+    const baseUrl = 
+      "https://script.google.com/macros/s/AKfycbw2SA_u78XqSaY2wlo-VsLR4QrCiURtxYTpdctFSZvQInYRy0lyjJ1NTJf-jyV66QR1/exec";
+
+    document.getElementById("myIframe").src =
+      `${baseUrl}?invoiceId=${encodeURIComponent(invoiceId)}`;
+  };
+</script>
+
+</body>
+</html>
