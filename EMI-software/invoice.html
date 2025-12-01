@@ -193,7 +193,7 @@
 </body>
 </html> -->
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <title>Invoice List</title>
@@ -247,6 +247,60 @@
         });
       });
   </script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Invoice Viewer</title>
+<style>
+  body, html {
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+  }
+  iframe {
+    position: fixed;
+    top: 0;
+    left: 0;
+    border: none;
+    width: 100vw;
+    height: 100vh;
+  }
+</style>
+</head>
+
+<body>
+<iframe id="myIframe" src=""></iframe>
+
+<script>
+  // Read invoiceId from URL like ?invoiceId=INV-1001
+  function getInvoiceId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("invoiceId");
+  }
+
+  window.onload = function () {
+    const invoiceId = getInvoiceId();
+
+    if (!invoiceId) {
+      alert("Missing invoiceId");
+      return;
+    }
+
+    // GOOGLE APPS SCRIPT WEB APP URL
+    const baseUrl =
+      "https://script.google.com/macros/s/AKfycbw2SA_u78XqSaY2wlo-VsLR4QrCiURtxYTpdctFSZvQInYRy0lyjJ1NTJf-jyV66QR1/exec";
+
+    const iframeUrl = `${baseUrl}?invoiceId=${encodeURIComponent(invoiceId)}`;
+
+    document.getElementById("myIframe").src = iframeUrl;
+  };
+</script>
+
 </body>
 </html>
 
