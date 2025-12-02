@@ -257,6 +257,23 @@
         .btn:hover { background: #0056b3; }
         
         #error-msg { color: #dc3545; text-align: center; display: none; padding: 50px; }
+
+
+
+               
+    /* Add styling for the fallback button */
+    #fallback-link {
+        display: none; /* Starts hidden, shown if iframe fails */
+        margin-top: 20px;
+        text-align: center;
+        padding: 10px;
+        background-color: #ffc107; /* Warning color */
+        color: #333;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
     </style>
 </head>
 <body>
@@ -278,6 +295,15 @@
         <div id="excel-content"></div>
     </div>
 
+
+    
+<a id="fallback-link" href="#" target="_blank">
+    ⚠️ Document not loading? Tap here to download and view.
+</a>
+
+
+
+    
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyAemGs7FBW94fcx0Ncrhi_caJvUfAutejnPvzgGt6S66yfOW_pY36rQGr0VgFTQUUALg/exec"; 
 
@@ -323,6 +349,8 @@
             }
         }
 
+
+        // works for desktop
         // function renderPdf(base64Data) {
         //     const blob = base64ToBlob(base64Data, "application/pdf");
         //     const url = URL.createObjectURL(blob);
@@ -333,21 +361,72 @@
         // }
 
 
-
+// works for mobile but address change
         // --- Replace the existing renderPdf function with this: ---
-function renderPdf(base64Data) {
-    const blob = base64ToBlob(base64Data, "application/pdf");
-    const pdfUrl = URL.createObjectURL(blob);
+// function renderPdf(base64Data) {
+//     const blob = base64ToBlob(base64Data, "application/pdf");
+//     const pdfUrl = URL.createObjectURL(blob);
     
-    // Switch Views - Hide the loader before navigating
-    document.getElementById('loader').style.display = 'none';
+//     // Switch Views - Hide the loader before navigating
+//     document.getElementById('loader').style.display = 'none';
 
-    // **CRITICAL FIX FOR MOBILE BROWSERS**
-    // Instead of setting the iframe source, navigate the entire page 
-    // to the Blob URL. This forces the mobile OS/browser to use its
-    // native full-screen PDF viewer, which is much more reliable.
-    window.location.assign(pdfUrl);
-}
+//     // **CRITICAL FIX FOR MOBILE BROWSERS**
+//     // Instead of setting the iframe source, navigate the entire page 
+//     // to the Blob URL. This forces the mobile OS/browser to use its
+//     // native full-screen PDF viewer, which is much more reliable.
+//     window.location.assign(pdfUrl);
+// }
+
+
+
+
+
+
+    // Existing helper function remains the same
+    function base64ToBlob(base64, mimeType) {
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], {type: mimeType});
+    }
+
+    // --- NEW renderPdf Function ---
+    function renderPdf(base64Data) {
+        const blob = base64ToBlob(base64Data, "application/pdf");
+        const pdfUrl = URL.createObjectURL(blob);
+        
+        const iframe = document.getElementById('pdf-frame');
+        const fallbackLink = document.getElementById('fallback-link');
+
+        // 1. Set the iframe source
+        iframe.src = pdfUrl;
+        
+        // 2. Set the fallback link href
+        // This makes the Blob URL available for direct download if the iframe fails.
+        fallbackLink.href = pdfUrl;
+
+        // 3. Switch Views
+        document.getElementById('loader').style.display = 'none';
+        iframe.style.display = 'block';
+
+        // 4. Set a timer to show the fallback link if the iframe hasn't loaded 
+        // after a few seconds (common issue on slow mobile connections/memory limits).
+        setTimeout(() => {
+            // Check if the iframe is still loading or likely failed
+            if (iframe.style.display === 'block') {
+                fallbackLink.style.display = 'block';
+            }
+        }, 5000); // 5 second delay
+
+        // Ensure the iframe removes the fallback link once the PDF is displayed
+        iframe.onload = () => {
+            fallbackLink.style.display = 'none';
+        };
+    }
+
 // -----------------------------------------------------------
 
         function renderExcel(base64Data, filename) {
