@@ -1,0 +1,211 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Viewer</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: sans-serif; background: #525659; }
+        #loader {
+            display: flex; justify-content: center; align-items: center; height: 100%; color: white;
+            flex-direction: column;
+        }
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 4px solid white;
+            width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        iframe { width: 100%; height: 100%; border: none; display: none; }
+        #error-msg { color: #ff6b6b; text-align: center; display: none; padding: 20px; margin-top: 20%; }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>Locating document...</p>
+    </div>
+
+    <div id="error-msg"></div>
+    <iframe id="pdf-frame"></iframe>
+
+    <script>
+        // --- CONFIGURATION ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyAemGs7FBW94fcx0Ncrhi_caJvUfAutejnPvzgGt6S66yfOW_pY36rQGr0VgFTQUUALg/exec"; 
+        const EXPECTED_PATH = "/invoice/"; // The URL path prefix you want to support
+        // ---------------------
+
+        async function init() {
+            // 1. Get the current URL path (e.g., "/invoice/2023.pdf")
+            const path = window.location.pathname;
+            
+            // 2. Check if the URL matches our expected pattern
+            if (!path.includes(EXPECTED_PATH)) {
+                // If the user visits the root page or a wrong path, show a generic 404 or redirect home
+                document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:20%'>404 - Page Not Found</h1>";
+                return;
+            }
+
+            // 3. Extract the filename from the end of the URL
+            // splits "/invoice/2023.pdf" -> ["", "invoice", "2023.pdf"] -> "2023.pdf"
+            const fileName = path.split('/').pop(); 
+
+            // Decode URI components (handles spaces like "Invoice%201.pdf")
+            const cleanFileName = decodeURIComponent(fileName);
+
+            if (!cleanFileName || cleanFileName === "") {
+                showError("No filename detected in URL.");
+                return;
+            }
+
+            // 4. Update the page title to match the file
+            document.title = cleanFileName;
+
+            // 5. Fetch the PDF data
+            await loadPdf(cleanFileName);
+        }
+
+        async function loadPdf(fileName) {
+            try {
+                // Call Google Apps Script with the extracted filename
+                const response = await fetch(`${SCRIPT_URL}?file=${encodeURIComponent(fileName)}`);
+                const result = await response.json();
+
+                if (result.status !== 'success') {
+                    throw new Error(result.message || "File not found in database.");
+                }
+
+                // Convert Base64 to Blob
+                const byteCharacters = atob(result.data);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const pdfBlob = new Blob([byteArray], {type: "application/pdf"});
+
+                // Display PDF
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                const iframe = document.getElementById('pdf-frame');
+                iframe.src = pdfUrl;
+                
+                document.getElementById('loader').style.display = 'none';
+                iframe.style.display = 'block';
+
+            } catch (error) {
+                showError("Error: " + error.message);
+            }
+        }
+
+        function showError(msg) {
+            document.getElementById('loader').style.display = 'none';
+            const errDiv = document.getElementById('error-msg');
+            errDiv.innerText = msg;
+            errDiv.style.display = 'block';
+        }
+
+        // Start the logic
+        init();
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Viewer</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: sans-serif; background: #525659; }
+        #loader {
+            display: flex; justify-content: center; align-items: center; height: 100%; color: white;
+            flex-direction: column;
+        }
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 4px solid white;
+            width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        iframe { width: 100%; height: 100%; border: none; display: none; }
+        #error-msg { color: #ff6b6b; text-align: center; display: none; padding: 20px; font-size: 18px; margin-top: 50px;}
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>Locating secure document...</p>
+    </div>
+
+    <div id="error-msg"></div>
+
+    <iframe id="pdf-frame"></iframe>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyAemGs7FBW94fcx0Ncrhi_caJvUfAutejnPvzgGt6S66yfOW_pY36rQGr0VgFTQUUALg/exec"; 
+
+        async function init() {
+            // 1. Get the path from the URL (e.g., "/invoice/2023.pdf")
+            const path = window.location.pathname;
+            
+            // 2. Extract the filename. 
+            // This logic takes the last segment of the URL. 
+            // Example: "yourcompany.com/invoice/2023.pdf" -> "2023.pdf"
+            const segments = path.split('/').filter(Boolean);
+            const fileName = segments.length > 0 ? segments[segments.length - 1] : null;
+
+            // If user just goes to root domain, show error or redirect
+            if (!fileName || !fileName.toLowerCase().endsWith('.pdf')) {
+                showError("Invalid URL. Please check the link.");
+                return;
+            }
+
+            try {
+                // 3. Call the API with the extracted filename
+                const response = await fetch(`${SCRIPT_URL}?file=${encodeURIComponent(fileName)}`);
+                const result = await response.json();
+
+                if (result.status !== 'success') {
+                    throw new Error("Document not found in database.");
+                }
+
+                // 4. Decode Base64 and display
+                const byteCharacters = atob(result.data);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const pdfBlob = new Blob([byteArray], {type: "application/pdf"});
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+
+                const iframe = document.getElementById('pdf-frame');
+                iframe.src = pdfUrl;
+                
+                document.getElementById('loader').style.display = 'none';
+                iframe.style.display = 'block';
+                
+                // Optional: Update page title
+                document.title = result.filename;
+
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        function showError(msg) {
+            document.getElementById('loader').style.display = 'none';
+            const errDiv = document.getElementById('error-msg');
+            errDiv.innerText = msg;
+            errDiv.style.display = 'block';
+        }
+
+        init();
+    </script>
+</body>
+</html>
