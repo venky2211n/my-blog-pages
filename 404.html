@@ -261,18 +261,18 @@
 
 
                
-    /* Add styling for the fallback button */
-    #fallback-link {
+    /* /* Add styling for the fallback button */
+    /* #fallback-link {
         display: none; /* Starts hidden, shown if iframe fails */
-        margin-top: 20px;
+        /* margin-top: 20px;
         text-align: center;
         padding: 10px;
         background-color: #ffc107; /* Warning color */
-        color: #333;
+        /* color: #333;
         border-radius: 5px;
         text-decoration: none;
         font-weight: bold;
-    }
+    } */ 
 
     </style>
 </head>
@@ -297,9 +297,9 @@
 
 
     
-<a id="fallback-link" href="#" target="_blank">
+<!-- <a id="fallback-link" href="#" target="_blank">
     ⚠️ Document not loading? Tap here to download and view.
-</a>
+</a> -->
 
 
 
@@ -351,14 +351,14 @@
 
 
         // works for desktop
-        // function renderPdf(base64Data) {
-        //     const blob = base64ToBlob(base64Data, "application/pdf");
-        //     const url = URL.createObjectURL(blob);
-        //     const iframe = document.getElementById('pdf-frame');
-        //     iframe.src = url;
-        //     iframe.style.display = 'block';
-        //     document.getElementById('loader').style.display = 'none';
-        // }
+        function renderPdf(base64Data) {
+            const blob = base64ToBlob(base64Data, "application/pdf");
+            const url = URL.createObjectURL(blob);
+            const iframe = document.getElementById('pdf-frame');
+            iframe.src = url;
+            iframe.style.display = 'block';
+            document.getElementById('loader').style.display = 'none';
+        }
 
 
 // works for mobile but address change
@@ -382,50 +382,50 @@
 
 
 
-    // Existing helper function remains the same
-    function base64ToBlob(base64, mimeType) {
-        const byteCharacters = atob(base64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        return new Blob([byteArray], {type: mimeType});
-    }
+    // // Existing helper function remains the same
+    // function base64ToBlob(base64, mimeType) {
+    //     const byteCharacters = atob(base64);
+    //     const byteNumbers = new Array(byteCharacters.length);
+    //     for (let i = 0; i < byteCharacters.length; i++) {
+    //         byteNumbers[i] = byteCharacters.charCodeAt(i);
+    //     }
+    //     const byteArray = new Uint8Array(byteNumbers);
+    //     return new Blob([byteArray], {type: mimeType});
+    // }
 
-    // --- NEW renderPdf Function ---
-    function renderPdf(base64Data) {
-        const blob = base64ToBlob(base64Data, "application/pdf");
-        const pdfUrl = URL.createObjectURL(blob);
+    // // --- NEW renderPdf Function ---
+    // function renderPdf(base64Data) {
+    //     const blob = base64ToBlob(base64Data, "application/pdf");
+    //     const pdfUrl = URL.createObjectURL(blob);
         
-        const iframe = document.getElementById('pdf-frame');
-        const fallbackLink = document.getElementById('fallback-link');
+    //     const iframe = document.getElementById('pdf-frame');
+    //     const fallbackLink = document.getElementById('fallback-link');
 
-        // 1. Set the iframe source
-        iframe.src = pdfUrl;
+    //     // 1. Set the iframe source
+    //     iframe.src = pdfUrl;
         
-        // 2. Set the fallback link href
-        // This makes the Blob URL available for direct download if the iframe fails.
-        fallbackLink.href = pdfUrl;
+    //     // 2. Set the fallback link href
+    //     // This makes the Blob URL available for direct download if the iframe fails.
+    //     fallbackLink.href = pdfUrl;
 
-        // 3. Switch Views
-        document.getElementById('loader').style.display = 'none';
-        iframe.style.display = 'block';
+    //     // 3. Switch Views
+    //     document.getElementById('loader').style.display = 'none';
+    //     iframe.style.display = 'block';
 
-        // 4. Set a timer to show the fallback link if the iframe hasn't loaded 
-        // after a few seconds (common issue on slow mobile connections/memory limits).
-        setTimeout(() => {
-            // Check if the iframe is still loading or likely failed
-            if (iframe.style.display === 'block') {
-                fallbackLink.style.display = 'block';
-            }
-        }, 5000); // 5 second delay
+    //     // 4. Set a timer to show the fallback link if the iframe hasn't loaded 
+    //     // after a few seconds (common issue on slow mobile connections/memory limits).
+    //     setTimeout(() => {
+    //         // Check if the iframe is still loading or likely failed
+    //         if (iframe.style.display === 'block') {
+    //             fallbackLink.style.display = 'block';
+    //         }
+    //     }, 5000); // 5 second delay
 
-        // Ensure the iframe removes the fallback link once the PDF is displayed
-        iframe.onload = () => {
-            fallbackLink.style.display = 'none';
-        };
-    }
+    //     // Ensure the iframe removes the fallback link once the PDF is displayed
+    //     iframe.onload = () => {
+    //         fallbackLink.style.display = 'none';
+    //     };
+    // }
 
 // -----------------------------------------------------------
 
