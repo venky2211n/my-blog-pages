@@ -323,14 +323,32 @@
             }
         }
 
-        function renderPdf(base64Data) {
-            const blob = base64ToBlob(base64Data, "application/pdf");
-            const url = URL.createObjectURL(blob);
-            const iframe = document.getElementById('pdf-frame');
-            iframe.src = url;
-            iframe.style.display = 'block';
-            document.getElementById('loader').style.display = 'none';
-        }
+        // function renderPdf(base64Data) {
+        //     const blob = base64ToBlob(base64Data, "application/pdf");
+        //     const url = URL.createObjectURL(blob);
+        //     const iframe = document.getElementById('pdf-frame');
+        //     iframe.src = url;
+        //     iframe.style.display = 'block';
+        //     document.getElementById('loader').style.display = 'none';
+        // }
+
+
+
+        // --- Replace the existing renderPdf function with this: ---
+function renderPdf(base64Data) {
+    const blob = base64ToBlob(base64Data, "application/pdf");
+    const pdfUrl = URL.createObjectURL(blob);
+    
+    // Switch Views - Hide the loader before navigating
+    document.getElementById('loader').style.display = 'none';
+
+    // **CRITICAL FIX FOR MOBILE BROWSERS**
+    // Instead of setting the iframe source, navigate the entire page 
+    // to the Blob URL. This forces the mobile OS/browser to use its
+    // native full-screen PDF viewer, which is much more reliable.
+    window.location.assign(pdfUrl);
+}
+// -----------------------------------------------------------
 
         function renderExcel(base64Data, filename) {
             // 1. Read the Base64 data using SheetJS
