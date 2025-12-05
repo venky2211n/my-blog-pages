@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure File Viewer</title>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"></script>
+
 
     <style>
         body, html { margin: 0; padding: 0; height: 100%; font-family: sans-serif; background: #f4f4f4; }
@@ -59,6 +61,8 @@
         </div>
         <div id="excel-content"></div>
     </div>
+
+    <canvas id="pdfCanvas" style="width:100%;"></canvas>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyAemGs7FBW94fcx0Ncrhi_caJvUfAutejnPvzgGt6S66yfOW_pY36rQGr0VgFTQUUALg/exec";
@@ -116,27 +120,51 @@
         // }
 
 
+//         function renderPdf(base64Data) {
+//     document.getElementById("loader").style.display = "none";
+
+//     const iframe = document.getElementById("pdf-frame");
+
+//     // Convert base64 → Blob → Object URL
+//     const blob = base64ToBlob(base64Data, "application/pdf");
+//     const pdfUrl = URL.createObjectURL(blob);
+
+//     const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+
+//     if (isMobile) {
+//         // Load using Google Docs viewer
+//         iframe.src = "https://docs.google.com/gview?embedded=true&url=" + encodeURIComponent(pdfUrl);
+//         iframe.style.display = "block";
+//         return;
+//     }
+
+//     // Desktop normal mode
+//     iframe.src = pdfUrl;
+//     iframe.style.display = "block";
+// }
+
+
         function renderPdf(base64Data) {
     document.getElementById("loader").style.display = "none";
 
-    const iframe = document.getElementById("pdf-frame");
+    const pdfData = atob(base64Data);
 
-    // Convert base64 → Blob → Object URL
-    const blob = base64ToBlob(base64Data, "application/pdf");
-    const pdfUrl = URL.createObjectURL(blob);
+    pdfjsLib.getDocument({ data: pdfData }).promise.then(pdf => {
+        pdf.getPage(1).then(page => {
+            const canvas = document.getElementById("pdfCanvas");
+            const context = canvas.getContext("2d");
 
-    const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+            const viewport = page.getViewport({ scale: 1.5 });
 
-    if (isMobile) {
-        // Load using Google Docs viewer
-        iframe.src = "https://docs.google.com/gview?embedded=true&url=" + encodeURIComponent(pdfUrl);
-        iframe.style.display = "block";
-        return;
-    }
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
 
-    // Desktop normal mode
-    iframe.src = pdfUrl;
-    iframe.style.display = "block";
+            page.render({
+                canvasContext: context,
+                viewport: viewport
+            });
+        });
+    });
 }
 
 
