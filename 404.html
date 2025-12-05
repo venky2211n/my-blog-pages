@@ -1,144 +1,69 @@
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secure File Viewer</title>
-
-<!-- PDF.js Library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"></script>
-<script>
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.js";
-</script>
-
-<!-- SheetJS (Excel Viewer) -->
-<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-
-<style>
-body, html { margin: 0; padding: 0; height: 100%; background: #f4f4f4; font-family: sans-serif; }
-
-#loader { display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; }
-.spinner { border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid #333; width: 40px; height: 40px; border-radius: 50%; animation: spin 1s linear infinite; }
-@keyframes spin { 100% { transform: rotate(360deg); } }
-
-#pdf-container { display: none; width: 100%; text-align: center; }
-#pdfCanvas { width: 100%; max-width: 900px; margin: auto; display: block; }
-
-#excel-container { display: none; max-width: 900px; margin: 30px auto; background: white; padding: 20px; }
-table { border-collapse: collapse; width: 100%; font-size: 14px; }
-th, td { border: 1px solid #ddd; padding: 8px; }
-th { background: #f8f9fa; }
-
-#error-msg { color: red; text-align: center; padding: 30px; display: none; }
-</style>
+    <title>PDF Viewer</title>
+    <style>
+        body { margin: 0; }
+        #pdf-viewer {
+            width: 100%;
+            height: 100vh;
+            overflow: scroll;
+            background: #f0f0f0;
+        }
+        canvas {
+            display: block;
+            margin: 10px auto;
+            background: white;
+            box-shadow: 0 0 4px rgba(0,0,0,0.3);
+        }
+    </style>
 </head>
 
 <body>
 
-<div id="loader">
-    <div class="spinner"></div>
-    <p>Loading document...</p>
-</div>
+<!-- PDF Container -->
+<div id="pdf-viewer"></div>
 
-<div id="error-msg"></div>
-
-<div id="pdf-container">
-    <canvas id="pdfCanvas"></canvas>
-</div>
-
-<div id="excel-container">
-    <h2 id="file-title"></h2>
-    <button id="download-btn">Download Original</button>
-    <div id="excel-content"></div>
-</div>
+<!-- Load PDF.js (THIS MUST BE LOADED BEFORE YOUR SCRIPT) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.min.js"></script>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyAemGs7FBW94fcx0Ncrhi_caJvUfAutejnPvzgGt6S66yfOW_pY36rQGr0VgFTQUUALg/exec";
+    // IMPORTANT: Set the worker source
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.worker.min.js";
 
-async function init() {
-    const segments = window.location.pathname.split("/").filter(Boolean);
-    const fileName = segments.pop();
+    // Replace this URL dynamically with your Apps Script PDF file URL
+    const pdfUrl = "https://script.google.com/macros/s/AKfycbyAemGs7FBW94fcx0Ncrhi_caJvUfAutejnPvzgGt6S66yfOW_pY36rQGr0VgFTQUUALg/exec?file=2025.pdf";
 
-    if (!fileName) return showError("File not found in URL");
+    // Load PDF
+    pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+        console.log("PDF loaded:", pdf.numPages);
 
-    const ext = fileName.split(".").pop().toLowerCase();
-    const isPdf = ext === "pdf";
-    const isExcel = ["xls", "xlsx", "csv"].includes(ext);
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+            pdf.getPage(pageNum).then(page => {
+                const viewport = page.getViewport({ scale: 1.3 });
 
-    try {
-        const res = await fetch(`${SCRIPT_URL}?file=${encodeURIComponent(fileName)}`);
-        const result = await res.json();
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
 
-        if (result.status !== "success") throw new Error("File not found");
+                document.getElementById("pdf-viewer").appendChild(canvas);
 
-        if (isPdf) renderPdf(result.data);
-        if (isExcel) renderExcel(result.data, result.filename);
-
-    } catch (e) {
-        showError(e.message);
-    }
-}
-
-function renderPdf(base64Data) {
-    document.getElementById("loader").style.display = "none";
-    document.getElementById("pdf-container").style.display = "block";
-
-    const pdfBytes = atob(base64Data);
-    const uint8Array = new Uint8Array(pdfBytes.length);
-    for (let i = 0; i < pdfBytes.length; i++) uint8Array[i] = pdfBytes.charCodeAt(i);
-
-    const loadingTask = pdfjsLib.getDocument(uint8Array);
-    loadingTask.promise.then(pdf => {
-        pdf.getPage(1).then(page => {
-            const canvas = document.getElementById("pdfCanvas");
-            const ctx = canvas.getContext("2d");
-
-            const viewport = page.getViewport({ scale: 1.5 });
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-
-            page.render({ canvasContext: ctx, viewport: viewport });
-        });
+                page.render({
+                    canvasContext: ctx,
+                    viewport: viewport
+                });
+            });
+        }
+    }).catch(err => {
+        console.error("Error loading PDF:", err);
+        alert("Unable to open PDF (file missing or permissions blocked)");
     });
-}
-
-function renderExcel(base64Data, filename) {
-    const wb = XLSX.read(base64Data, { type: "base64" });
-    const sheet = wb.Sheets[wb.SheetNames[0]];
-    const html = XLSX.utils.sheet_to_html(sheet);
-
-    document.getElementById("file-title").innerText = filename;
-    document.getElementById("excel-content").innerHTML = html;
-
-    document.getElementById("download-btn").onclick = () => {
-        const blob = base64ToBlob(base64Data, "application/vnd.ms-excel");
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        a.click();
-    };
-
-    document.getElementById("loader").style.display = "none";
-    document.getElementById("excel-container").style.display = "block";
-}
-
-function base64ToBlob(base64, type) {
-    const bin = atob(base64);
-    const arr = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-    return new Blob([arr], { type });
-}
-
-function showError(msg) {
-    document.getElementById("loader").style.display = "none";
-    let div = document.getElementById("error-msg");
-    div.innerText = msg;
-    div.style.display = "block";
-}
-
-init();
 </script>
 
 </body>
 </html>
+
