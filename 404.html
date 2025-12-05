@@ -354,6 +354,7 @@
         function renderPdf(base64Data) {
             const blob = base64ToBlob(base64Data, "application/pdf");
             const url = URL.createObjectURL(blob);
+            const pdfUrl = URL.createObjectURL(blob);
             const iframe = document.getElementById('pdf-frame');
             iframe.src = url;
             iframe.style.display = 'block';
