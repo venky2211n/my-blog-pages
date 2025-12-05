@@ -93,27 +93,52 @@
             }
         }
 
-        // ---------- MOBILE + DESKTOP PDF MODE ----------
+        // // ---------- MOBILE + DESKTOP PDF MODE ----------
+        // function renderPdf(base64Data) {
+        //     document.getElementById("loader").style.display = "none";
+
+        //     const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+
+        //     // ---------- MOBILE FIX ----------
+        //     if (isMobile) {
+        //         // Same URL → mobile browser opens PDF using native viewer
+        //         window.location.href = window.location.href;
+        //         return;
+        //     }
+
+        //     // ---------- DESKTOP ----------
+        //     const blob = base64ToBlob(base64Data, "application/pdf");
+        //     const url = URL.createObjectURL(blob);
+
+        //     const iframe = document.getElementById("pdf-frame");
+        //     iframe.src = url;
+        //     iframe.style.display = "block";
+        // }
+
+
         function renderPdf(base64Data) {
-            document.getElementById("loader").style.display = "none";
+    document.getElementById("loader").style.display = "none";
 
-            const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+    const iframe = document.getElementById("pdf-frame");
 
-            // ---------- MOBILE FIX ----------
-            if (isMobile) {
-                // Same URL → mobile browser opens PDF using native viewer
-                window.location.href = window.location.href;
-                return;
-            }
+    // Convert base64 → Blob → Object URL
+    const blob = base64ToBlob(base64Data, "application/pdf");
+    const pdfUrl = URL.createObjectURL(blob);
 
-            // ---------- DESKTOP ----------
-            const blob = base64ToBlob(base64Data, "application/pdf");
-            const url = URL.createObjectURL(blob);
+    const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
 
-            const iframe = document.getElementById("pdf-frame");
-            iframe.src = url;
-            iframe.style.display = "block";
-        }
+    if (isMobile) {
+        // Load using Google Docs viewer
+        iframe.src = "https://docs.google.com/gview?embedded=true&url=" + encodeURIComponent(pdfUrl);
+        iframe.style.display = "block";
+        return;
+    }
+
+    // Desktop normal mode
+    iframe.src = pdfUrl;
+    iframe.style.display = "block";
+}
+
 
         // ---------- EXCEL VIEWER ----------
         function renderExcel(base64Data, filename) {
