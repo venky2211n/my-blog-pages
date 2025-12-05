@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure File Viewer</title>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; font-family: sans-serif; background: #f4f4f4; }
+
+        /* Loader */
+        #loader {
+            display: flex; justify-content: center; align-items: center; height: 100%; color: #333;
+            flex-direction: column;
+        }
+        .spinner {
+            border: 4px solid rgba(0,0,0,0.1); border-radius: 50%; border-top: 4px solid #333;
+            width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        iframe { width: 100%; height: 100%; border: none; display: none; }
+
+        #excel-container { 
+            display: none; padding: 40px; max-width: 1000px; margin: 0 auto; background: white; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); min-height: 100vh; overflow: auto;
+        }
+        #excel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+
+        table { border-collapse: collapse; width: 100%; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f8f9fa; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+
+        .btn { 
+            padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; cursor: pointer; border: none; font-size: 14px;
+        }
+        .btn:hover { background: #0056b3; }
+
+        #error-msg { color: #dc3545; text-align: center; display: none; padding: 50px; }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>Fetching secure document...</p>
+    </div>
+
+    <div id="error-msg"></div>
+
+    <iframe id="pdf-frame"></iframe>
+
+    <div id="excel-container">
+        <div id="excel-header">
+            <h2 id="file-title">Invoice</h2>
+            <button id="download-btn" class="btn">Download Original File</button>
+        </div>
+        <div id="excel-content"></div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyAemGs7FBW94fcx0Ncrhi_caJvUfAutejnPvzgGt6S66yfOW_pY36rQGr0VgFTQUUALg/exec";
+
+        init();
+
+        async function init() {
+
+            const path = window.location.pathname;
+            const parts = path.split('/').filter(Boolean);
+            const fileName = parts[parts.length - 1];
+
+            if (!fileName) return showError("No file found in URL.");
+
+            const ext = fileName.split('.').pop().toLowerCase();
+            const isExcel = ['xls', 'xlsx', 'csv'].includes(ext);
+            const isPdf = ['pdf'].includes(ext);
+
+            if (!isExcel && !isPdf) return showError("Unsupported file type.");
+
+            try {
+                const res = await fetch(`${SCRIPT_URL}?file=${encodeURIComponent(fileName)}`);
+                const result = await res.json();
+
+                if (result.status !== "success") throw new Error("File not found in database.");
+
+                if (isPdf) renderPdf(result.data);
+                else renderExcel(result.data, result.filename);
+
+            } catch (err) {
+                showError(err.message);
+            }
+        }
+
+        // ---------- MOBILE + DESKTOP PDF MODE ----------
+        function renderPdf(base64Data) {
+            document.getElementById("loader").style.display = "none";
+
+            const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+
+            // ---------- MOBILE FIX ----------
+            if (isMobile) {
+                // Same URL → mobile browser opens PDF using native viewer
+                window.location.href = window.location.href;
+                return;
+            }
+
+            // ---------- DESKTOP ----------
+            const blob = base64ToBlob(base64Data, "application/pdf");
+            const url = URL.createObjectURL(blob);
+
+            const iframe = document.getElementById("pdf-frame");
+            iframe.src = url;
+            iframe.style.display = "block";
+        }
+
+        // ---------- EXCEL VIEWER ----------
+        function renderExcel(base64Data, filename) {
+            const workbook = XLSX.read(base64Data, { type: "base64" });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const html = XLSX.utils.sheet_to_html(sheet);
+
+            document.getElementById("excel-content").innerHTML = html;
+            document.getElementById("file-title").innerText = filename;
+
+            document.getElementById("download-btn").onclick = () => {
+                const blob = base64ToBlob(base64Data, "application/vnd.ms-excel");
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+            };
+
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("excel-container").style.display = "block";
+        }
+
+        // ---------- HELPERS ----------
+        function base64ToBlob(base64, mime) {
+            const byteChars = atob(base64);
+            const byteNums = new Array(byteChars.length);
+            for (let i = 0; i < byteChars.length; i++) byteNums[i] = byteChars.charCodeAt(i);
+            return new Blob([new Uint8Array(byteNums)], { type: mime });
+        }
+
+        function showError(msg) {
+            document.getElementById("loader").style.display = "none";
+            const err = document.getElementById("error-msg");
+            err.innerText = msg;
+            err.style.display = "block";
+        }
+    </script>
+
+</body>
+</html>
+
