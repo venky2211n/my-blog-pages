@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure File Viewer</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- PDF.js (Correct version) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.worker.min.js";
+</script>
+
+<!-- SheetJS for Excel -->
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+<style>
+body, html { margin: 0; padding: 0; min-height: 100vh; font-family: 'Inter', sans-serif; }
+#loader { display: flex; justify-content: center; align-items: center; min-height: 100vh; flex-direction: column; }
+.spinner { border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid #3b82f6; width: 40px; height: 40px; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+#pdf-container { display: none; width: 100%; box-sizing: border-box; overflow-y: auto; }
+.pdf-page-canvas { margin: 0 auto 20px auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: block; width: 100%; max-width: 900px; border-radius: 8px; }
+#excel-container { display: none; max-width: 900px; margin: 30px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { border: 1px solid #e5e7eb; padding: 12px; text-align: left; }
+th { background: #f3f4f6; font-weight: 600; }
+</style>
+</head>
+
+<body class="bg-gray-100">
+
+<div id="loader">
+    <div class="spinner"></div>
+    <p class="mt-4 text-gray-600">Loading document securely...</p>
+</div>
+
+<div id="error-msg" class="hidden text-center p-4 m-8 bg-red-100 border border-red-400 text-red-700 rounded-lg max-w-lg mx-auto"></div>
+
+<div id="pdf-container" class="max-w-4xl mx-auto p-4 md:p-8"></div>
+
+<!-- Excel Container -->
+<div id="excel-container">
+    <div class="flex justify-between items-center mb-4">
+        <h2 id="file-title" class="text-xl font-bold text-gray-800"></h2>
+
+        <!-- DOWNLOAD BUTTON -->
+        <button id="download-btn"
+            class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300">
+            Download Original
+        </button>
+    </div>
+
+    <div id="excel-content" class="overflow-x-auto"></div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzlwPSVllwkjugj3xAMhF6TE25DExYcRh1n_jMN17K0cDEl6YGqLpPxZma7zrjZ0Kge/exec";
+
+let globalBase64 = "";
+let globalFileName = "";
+let globalMime = "";
+
+async function init() {
+    const path = window.location.pathname.split("/");
+    const fileName = path.pop();
+
+    const ext = fileName.split(".").pop().toLowerCase();
+    const isExcel = ["xls", "xlsx", "csv"].includes(ext);
+    const isPdf = ext === "pdf";
+
+    try {
+        const response = await fetch(`${SCRIPT_URL}?fileName=${fileName}`);
+        const result = await response.json();
+
+        if (result.status !== "success") {
+            showError(result.error);
+            return;
+        }
+
+        globalBase64 = result.data;
+        globalFileName = result.filename;
+        globalMime = result.mime;
+
+        if (isPdf) renderPdf(result.data);
+        else if (isExcel) renderExcel(result.data, result.filename);
+
+        document.getElementById("download-btn").onclick = downloadOriginal;
+
+    } catch (e) {
+        showError("Failed to load file");
+    }
+}
+
+async function renderPdf(base64Data) {
+    document.getElementById("loader").style.display = "none";
+
+    const pdfData = atob(base64Data);
+    const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+
+    const container = document.getElementById("pdf-container");
+    container.style.display = "block";
+
+    for (let n = 1; n <= pdf.numPages; n++) {
+        const page = await pdf.getPage(n);
+        const viewport = page.getViewport({ scale: 1 });
+        const canvas = document.createElement("canvas");
+
+        const scale = Math.min(window.innerWidth / viewport.width, 1.4);
+        const sv = page.getViewport({ scale });
+
+        canvas.height = sv.height;
+        canvas.width = sv.width;
+        canvas.className = "pdf-page-canvas";
+
+        await page.render({ canvasContext: canvas.getContext("2d"), viewport: sv }).promise;
+        container.appendChild(canvas);
+    }
+}
+
+function renderExcel(base64Data, filename) {
+    document.getElementById("loader").style.display = "none";
+    const wb = XLSX.read(base64Data, { type: "base64" });
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    const html = XLSX.utils.sheet_to_html(sheet);
+
+    document.getElementById("file-title").innerText = filename;
+    document.getElementById("excel-content").innerHTML = html;
+    document.getElementById("excel-container").style.display = "block";
+}
+
+function downloadOriginal() {
+    const a = document.createElement("a");
+    a.href = "data:" + globalMime + ";base64," + globalBase64;
+    a.download = globalFileName;
+    a.click();
+}
+
+function showError(msg) {
+    document.getElementById("loader").style.display = "none";
+    const box = document.getElementById("error-msg");
+    box.innerHTML = msg;
+    box.classList.remove("hidden");
+}
+
+init();
+</script>
+
+</body>
+</html>
