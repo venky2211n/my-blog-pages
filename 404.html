@@ -1,4 +1,4 @@
-
+<!-- 
 
 <!DOCTYPE html>
 <html lang="en">
@@ -185,4 +185,259 @@ th { background: #f8f9fa; }
 
 
 
-  
+   -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure File Viewer</title>
+
+<!-- Tailwind CSS for modern styling -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- PDF.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.js";
+</script>
+
+<!-- SheetJS (Excel Viewer) -->
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+<style>
+/* Base Styles */
+body, html { margin: 0; padding: 0; min-height: 100vh; font-family: 'Inter', sans-serif; }
+
+/* Loader Styles */
+#loader { display: flex; justify-content: center; align-items: center; min-height: 100vh; flex-direction: column; }
+.spinner { border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid #3b82f6; width: 40px; height: 40px; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* PDF Rendering Styles (Canvas-based) */
+#pdf-container { 
+    display: none; 
+    width: 100%; 
+    box-sizing: border-box; 
+    overflow-y: auto; 
+}
+.pdf-page-canvas { 
+    /* Ensures canvases scale correctly and are centered */
+    margin: 0 auto 20px auto; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+    display: block; 
+    width: 100%; 
+    max-width: 900px; 
+    border-radius: 8px;
+}
+
+/* Excel Table Styles */
+#excel-container { 
+    display: none; 
+    max-width: 900px; 
+    margin: 30px auto; 
+    background: white; 
+    padding: 20px; 
+    border-radius: 8px; 
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+}
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { border: 1px solid #e5e7eb; padding: 12px; text-align: left; }
+th { background: #f3f4f6; font-weight: 600; }
+</style>
+</head>
+
+<body class="bg-gray-100">
+
+<div id="loader">
+    <div class="spinner"></div>
+    <p class="mt-4 text-gray-600">Loading document securely...</p>
+</div>
+
+<div id="error-msg" class="hidden text-center p-4 m-8 bg-red-100 border border-red-400 text-red-700 rounded-lg max-w-lg mx-auto"></div>
+
+<!-- PDF container for dynamically generated canvases (URL Masking Preserved) -->
+<div id="pdf-container" class="max-w-4xl mx-auto p-4 md:p-8">
+    <!-- Canvases will be added here dynamically by PDF.js -->
+</div>
+
+<!-- Excel Viewer -->
+<div id="excel-container">
+    <div class="flex justify-between items-center mb-4">
+        <h2 id="file-title" class="text-xl font-bold text-gray-800"></h2>
+        <button id="download-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300">
+            Download Original
+        </button>
+    </div>
+    <div id="excel-content" class="overflow-x-auto"></div>
+</div>
+
+
+<script>
+    // REPLACE THIS WITH YOUR ACTUAL GAS DEPLOYMENT URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyAemGs7FBW94fcx0Ncrhi_caJvUfAutejnPvzgGt6S66yfOW_pY36rQGr0VgFTQUUALg/exec"; 
+
+    async function init() {
+        // Extract filename from URL (e.g., "2025.pdf")
+        const path = window.location.pathname;
+        const segments = path.split('/').filter(Boolean);
+        const fileName = segments.length > 0 ? segments[segments.length - 1] : null;
+
+        if (!fileName) {
+            showError("No filename found in URL.");
+            return;
+        }
+
+        // Detect File Type
+        const parts = fileName.split('.');
+        // Check if a dot was found and use the part after the last dot as the extension
+        const ext = parts.length > 1 ? parts.pop().toLowerCase() : null; 
+        
+        // If ext is null, it means no file extension was present (like the UUID case)
+        if (!ext) {
+            showError(`Could not determine file type from URL component: "${fileName}". Please ensure the URL ends with a filename and extension (e.g., /invoice/2025.pdf).`);
+            return;
+        }
+
+        const isExcel = ['xls', 'xlsx', 'csv'].includes(ext);
+        const isPdf = ['pdf'].includes(ext);
+
+        if (!isExcel && !isPdf) {
+            // Now shows the actual unsupported extension (e.g., .txt, .jpg, or the UUID if logic was missed)
+            showError("Unsupported file extension: ." + ext);
+            return;
+        }
+
+        try {
+            // Fetch Data
+            const response = await fetch(`${SCRIPT_URL}?fileName=${encodeURIComponent(fileName)}`);
+            const result = await response.json();
+
+            if (result.status !== 'success' || !result.data) {
+                throw new Error(result.error || "File not found or access denied.");
+            }
+
+            // Handle Rendering based on type
+            if (isPdf) {
+                // Using canvas rendering to preserve the URL (no iframe is needed)
+                renderPdf(result.data);
+            } else if (isExcel) {
+                renderExcel(result.data, result.filename);
+            }
+
+        } catch (error) {
+            showError("Error fetching document: " + error.message);
+        }
+    }
+
+    /**
+     * Renders a PDF file onto the canvas using PDF.js. 
+     * This method preserves the original URL by drawing the PDF in-page.
+     */
+    async function renderPdf(base64Data) {
+        document.getElementById('loader').style.display = 'none';
+
+        try {
+            // 1. Prepare PDF data for PDF.js
+            const pdfData = atob(base64Data);
+            const loadingTask = pdfjsLib.getDocument({ data: pdfData });
+            const pdf = await loadingTask.promise;
+            
+            const pdfContainer = document.getElementById('pdf-container');
+            pdfContainer.innerHTML = ''; // Clear existing content
+            pdfContainer.style.display = 'block';
+
+            // Define maximum rendering width (for responsiveness)
+            // Use window.innerWidth for better mobile scaling, but cap it at 900px for desktop.
+            const maxRenderWidth = Math.min(window.innerWidth - 40, 900); 
+
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                const page = await pdf.getPage(pageNum);
+                
+                // 2. Calculate scale based on maxRenderWidth
+                const viewport = page.getViewport({ scale: 1 });
+                const scale = maxRenderWidth / viewport.width;
+                const scaledViewport = page.getViewport({ scale: scale });
+
+                // 3. Create and configure canvas element
+                const canvas = document.createElement('canvas');
+                canvas.className = 'pdf-page-canvas';
+                canvas.height = scaledViewport.height;
+                canvas.width = scaledViewport.width;
+                
+                const context = canvas.getContext('2d');
+                
+                // 4. Render the page
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: scaledViewport
+                };
+                await page.render(renderContext).promise;
+
+                // 5. Append to container
+                pdfContainer.appendChild(canvas);
+            }
+
+        } catch (error) {
+            console.error("PDF Rendering Error:", error);
+            showError("Failed to render PDF using PDF.js. This may be due to the file size exceeding browser memory limits. You may need to use a direct download link instead.");
+        }
+    }
+
+
+    function renderExcel(base64Data, filename) {
+        // 1. Read the Base64 data using SheetJS
+        const workbook = XLSX.read(base64Data, {type: 'base64'});
+
+        // 2. Get the first sheet name
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+
+        // 3. Convert sheet to HTML Table
+        const htmlTable = XLSX.utils.sheet_to_html(worksheet);
+
+        // 4. Inject into DOM
+        document.getElementById('excel-content').innerHTML = htmlTable;
+        document.getElementById('file-title').innerText = filename;
+        
+        // 5. Setup Download Button
+        document.getElementById('download-btn').onclick = () => {
+            const blob = base64ToBlob(base64Data, "application/vnd.ms-excel");
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        };
+
+        // Switch Views
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('excel-container').style.display = 'block';
+    }
+
+    // Helper: Convert Base64 to Blob
+    function base64ToBlob(base64, mimeType) {
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], {type: mimeType});
+    }
+
+    function showError(msg) {
+        document.getElementById('loader').style.display = 'none';
+        const errDiv = document.getElementById('error-msg');
+        errDiv.innerText = msg;
+        errDiv.classList.remove('hidden'); // Use Tailwind class to show it
+    }
+
+    init();
+</script>
+
+</body>
+</html>
