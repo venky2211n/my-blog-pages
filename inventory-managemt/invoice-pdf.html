@@ -38,7 +38,7 @@
     }
 
     const baseUrl = "https://script.google.com/macros/s/AKfycbw1N9czdQMgx5tBog88Z1iRUZ9EcdCiFa7lki-r47hzizUm7PGEEGHkO3kyKz4J3wVC/exec";
-    const iframeUrl = `${baseUrl}?invoiceId=${encodeURIComponent(id)}`;
+    const iframeUrl = `${baseUrl}?invoiceNo=${encodeURIComponent(id)}`;
     document.getElementById("myIframe").src = iframeUrl;
   };
 </script> 
