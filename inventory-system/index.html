@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Invoice Router</title>
-  <script>
+  <!-- <script>
     function routePage() {
       const params = new URLSearchParams(window.location.search);
 
@@ -24,7 +24,34 @@
       // DEFAULT: show error
       document.body.innerHTML = "<h2>Invalid link or missing parameters</h2>";
     }
-  </script>
+  </script> -->
+
+
+  <script>
+function routePage() {
+  const pathname = window.location.pathname;
+
+  // If the URL directly contains invoice-pdf.html, DO NOT ROUTE!
+  if (pathname.includes("invoice-pdf.html")) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const page = params.get("page");
+  const invoiceNo = params.get("invoiceNo");
+
+  if (page === "invoice" && invoiceNo) {
+    window.location.href = "invoice.html?page=invoice&invoiceNo=" + encodeURIComponent(invoiceNo);
+    return;
+  }
+
+  if (invoiceNo && !page) {
+    window.location.href = "invoice-pdf.html?invoiceNo=" + encodeURIComponent(invoiceNo);
+    return;
+  }
+
+  document.body.innerHTML = "<h2>Invalid link or missing parameters</h2>";
+}
+</script>
+
 </head>
 <body onload="routePage()">
 </body>
