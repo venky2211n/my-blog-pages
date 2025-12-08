@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <title>Details Page</title>
@@ -42,13 +42,60 @@
     document.getElementById("myIframe").src = iframeUrl;
   };
 </script> 
+</body>
+</html> -->
 
 
 
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice Viewer</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      border: none;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
 
+<iframe id="myIframe" src=""></iframe>
 
+<script>
+  function getParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
+  }
 
+  window.onload = function () {
+    const invoiceNo = getParam("invoiceNo");
 
+    if (!invoiceNo) {
+      alert("Missing invoice number!");
+      return;
+    }
 
+    // Your Google Apps Script URL
+    const gasURL =
+      "https://script.google.com/macros/s/AKfycbzt7ld-YOvVzfNub3Gs-VzeiNDuwF9WjgVkuyjP04ZJQWcHkqYmAZZKj6zq6MRBpPhh/exec";
+
+    // Final iframe URL
+    const finalURL = `${gasURL}?page=invoice&invoiceNo=${encodeURIComponent(invoiceNo)}`;
+
+    document.getElementById("myIframe").src = finalURL;
+  };
+</script>
 </body>
 </html>
+
