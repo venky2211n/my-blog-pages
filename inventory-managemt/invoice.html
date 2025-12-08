@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Details Page</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      border: none;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
 
+<iframe id="myIframe" src=""></iframe>
+
+<script>
+  function getIdFromQuery() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("id");
+  }
+
+  window.onload = function() {
+    const id = getIdFromQuery();
+    if (!id) {
+      alert("Missing ID");
+      return;
+    }
+
+    const baseUrl = "https://script.google.com/macros/s/AKfycbyOMkRTfblcGXYTWG4HbZYcyxqZvONkfthOQd8i6FE/dev";
+    const iframeUrl = `${baseUrl}?page=invoice&id=${encodeURIComponent(id)}`;
+    document.getElementById("myIframe").src = iframeUrl;
+  };
+</script> 
+
+
+
+
+
+
+
+
+</body>
+</html>
