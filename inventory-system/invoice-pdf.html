@@ -1,1 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice Viewer</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      border: none;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
 
+<iframe id="myIframe" src=""></iframe>
+
+<script>
+  // GET INVOICE NUMBER FROM URL
+  function getInvoiceNo() {
+    return new URLSearchParams(window.location.search).get("invoiceNo");
+  }
+
+  window.onload = function () {
+    const invoiceNo = getInvoiceNo();
+
+    if (!invoiceNo) {
+      alert("Missing invoiceNo");
+      return;
+    }
+
+    // GOOGLE APPS SCRIPT DEPLOYED URL
+    const gasURL =
+      "https://script.google.com/macros/s/AKfycbyRYY_GzPc8KxgXDEzLi1q-G0Hfw1aDObywpJK3KbfgSpLrs5djpwoE5A4xmA0dm9RF/exec";
+
+    // FINAL URL FOR IFRAME
+    const iframeUrl = `${gasURL}?invoiceNo=${encodeURIComponent(invoiceNo)}`;
+
+    document.getElementById("myIframe").src = iframeUrl;
+  };
+</script>
+
+</body>
+</html>
