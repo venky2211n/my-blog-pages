@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice Router</title>
+  <script>
+    function routePage() {
+      const params = new URLSearchParams(window.location.search);
+
+      const page = params.get("page");
+      const invoiceNo = params.get("invoiceNo");
+
+      // CASE 1: ?page=invoice&invoiceNo=xxxx → OPEN invoice.html
+      if (page === "invoice" && invoiceNo) {
+        window.location.href = "invoice.html?page=invoice&invoiceNo=" + encodeURIComponent(invoiceNo);
+        return;
+      }
+
+      // CASE 2: ?invoiceNo=xxxx → OPEN invoice-pdf.html
+      if (invoiceNo && !page) {
+        window.location.href = "invoice-pdf.html?invoiceNo=" + encodeURIComponent(invoiceNo);
+        return;
+      }
+
+      // DEFAULT: show error
+      document.body.innerHTML = "<h2>Invalid link or missing parameters</h2>";
+    }
+  </script>
+</head>
+<body onload="routePage()">
+</body>
+</html>
