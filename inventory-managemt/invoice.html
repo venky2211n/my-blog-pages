@@ -77,7 +77,7 @@
   function getParam(name) {
     return new URLSearchParams(window.location.search).get(name);
   }
-
+// const invoiceNo = new URLSearchParams(window.location.search).get("invoiceNo");
   window.onload = function () {
     const invoiceNo = getParam("invoiceNo");
 
