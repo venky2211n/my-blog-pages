@@ -1,5 +1,5 @@
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -37,9 +37,9 @@
   window.location.href = scriptUrl;
 
 })();
-</script> -->
+<!-- </script> -->
 
-  <script>
+  <!-- <script>
 const params = new URLSearchParams(window.location.search);
 const invoiceNo = params.get("invoiceNo");
 
@@ -50,7 +50,58 @@ if (!invoiceNo) {
     "https://script.google.com/macros/s/AKfycbz2Uz_JBhk3Nz2h3yLAqwpG6BNVJvB6Z4Wf5fx8EyTzFlNNWuc07FfhGDI7qfxsx3xd/exec" +
     "?invoiceNo=" + encodeURIComponent(invoiceNo);
 }
+</script> --> 
+
+<!-- </body>
+</html> --> 
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Downloading Invoice…</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 40px;
+    }
+    iframe {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<h3>Downloading invoice…</h3>
+<p>Please wait</p>
+
+<iframe id="downloadFrame"></iframe>
+
+<script>
+(function () {
+
+  const params = new URLSearchParams(window.location.search);
+  const invoiceNo = params.get("invoiceNo");
+
+  if (!invoiceNo) {
+    document.body.innerHTML = "<h3>Invoice number missing</h3>";
+    return;
+  }
+
+  const scriptUrl =
+    "https://script.google.com/macros/s/AKfycbz2Uz_JBhk3Nz2h3yLAqwpG6BNVJvB6Z4Wf5fx8EyTzFlNNWuc07FfhGDI7qfxsx3xd/exec"
+    + "?invoiceNo=" + encodeURIComponent(invoiceNo);
+
+  // ✅ LOAD IN HIDDEN IFRAME → AUTO DOWNLOAD
+  document.getElementById("downloadFrame").src = scriptUrl;
+
+})();
 </script>
 
 </body>
 </html>
+
