@@ -9,7 +9,7 @@
 
 <p>Downloading invoice…</p>
 
-<script>
+<!-- <script>
 (function () {
 
   // -----------------------------
@@ -37,6 +37,19 @@
   window.location.href = scriptUrl;
 
 })();
+</script> -->
+
+  <script>
+const params = new URLSearchParams(window.location.search);
+const invoiceNo = params.get("invoiceNo");
+
+if (!invoiceNo) {
+  document.body.innerHTML = "Invoice number missing";
+} else {
+  window.location.href =
+    "https://script.google.com/macros/s/AKfycbwGo8dk6H6U25aYG5_QJdplaJF-ou4q-fOJ854d-V-mkjjW7BVUtvp0z7mqaIL1XeQV/exec" +
+    "?invoiceNo=" + encodeURIComponent(invoiceNo);
+}
 </script>
 
 </body>
