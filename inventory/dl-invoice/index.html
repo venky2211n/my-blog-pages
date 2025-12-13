@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Downloading Invoice...</title>
+</head>
+<body>
+
+<p>Downloading invoice…</p>
+
+<script>
+(function () {
+
+  // -----------------------------
+  // GET INVOICE NO FROM URL PATH
+  // -----------------------------
+  // /inventory/dl-invoice/INV-12345
+  const parts = window.location.pathname.split("/");
+  const invoiceNo = parts[parts.length - 1];
+
+  if (!invoiceNo || invoiceNo === "dl-invoice") {
+    alert("Invoice number missing");
+    return;
+  }
+
+  // -----------------------------
+  // APPS SCRIPT URL
+  // -----------------------------
+  const scriptUrl =
+    "https://script.google.com/macros/s/AKfycbz2ahe__YKtifmBEHuDzguf4tviBp8T9bcl0AKg2_5LiwdIPopILq9eFIy0QWXp7P6l/exec"
+    + "?invoiceNo=" + encodeURIComponent(invoiceNo);
+
+  // -----------------------------
+  // AUTO DOWNLOAD
+  // -----------------------------
+  window.location.href = scriptUrl;
+
+})();
+</script>
+
+</body>
+</html>
