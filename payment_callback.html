@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -35,6 +35,44 @@
   document.write(
     `<iframe src="${target}"></iframe>`
   );
+</script>
+
+</body>
+</html> -->
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Callback</title>
+  <style>
+    body { margin: 0 }
+    iframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  const p = new URLSearchParams(location.search);
+  const roll = p.get("roll");
+  const flag = p.get("payment_callback");
+
+  const GAS =
+    "https://script.google.com/macros/s/AKfycbw-GF4s0CDJNHHu_LzcKLA70CQNzg3rYn_r2FEDCvxzNlh2jIQAK1AQIDjVkfVsNqQv/exec";
+
+  const url =
+    `${GAS}?page=callback&roll=${roll}&payment_callback=${flag}`;
+
+  document.write(`<iframe src="${url}"></iframe>`);
 </script>
 
 </body>
