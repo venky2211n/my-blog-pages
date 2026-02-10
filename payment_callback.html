@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Callback</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+    }
+    iframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<script>
+  // Read parameters from custom domain URL
+  const params = new URLSearchParams(window.location.search);
+  const roll = params.get("roll");
+  const callback = params.get("payment_callback");
+
+  // Your Apps Script Web App URL
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbwMykwF96UnDRbVvOrBjLBMf_G1bIu8RhTxfftsq_OvAlqDR0hXPEuMSy--LOJimgR-/exec";
+
+  // Build GAS URL with same parameters
+  const target =
+    `${GAS_URL}?page=callback&roll=${roll}&payment_callback=${callback}`;
+
+  // Load GAS inside iframe
+  document.write(
+    `<iframe src="${target}"></iframe>`
+  );
+</script>
+
+</body>
+</html>
