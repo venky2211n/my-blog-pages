@@ -1,1 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
 
+<style>
+html,body{
+margin:0;
+height:100%;
+}
+
+iframe{
+width:100%;
+height:100vh;
+border:none;
+}
+</style>
+
+</head>
+<body>
+
+<iframe id="frame"></iframe>
+
+<script>
+
+const baseURL =
+"https://script.google.com/macros/s/AKfycbyuSs5GECRSiEb1JwrlAUxT1mH7yMq8mHKVJNlrymuOA04Pv9ltbkY9u3271fbZD28T/exec";
+
+function getParam(name){
+return new URLSearchParams(location.search).get(name);
+}
+
+window.onload=function(){
+
+let id=getParam("id");
+
+if(id){
+document.getElementById("frame").src=
+baseURL+"?page=details&id="+id;
+}else{
+document.getElementById("frame").src=
+baseURL+"?page=products";
+}
+
+}
+
+</script>
+
+</body>
+</html>
